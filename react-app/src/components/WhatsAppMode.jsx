@@ -37,27 +37,54 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
 
   // Process bot responses based on conversation step
   const triggerBotResponse = (userText) => {
+    // Show a small delay to simulate "AI thinking / typing"
     setTimeout(() => {
       let botReplyText = "";
       let nextStep = chatStep;
+      
+      const textLower = userText.toLowerCase();
 
       if (chatStep === 1) {
-        botReplyText = currentLanguage === 'hi-IN' 
-          ? `धन्यवाद! मैंने नोट किया कि आप "${userText}" से जुड़े हैं। अब कृपया बताएं कि आप किस जिले या गांव से हैं?`
-          : `Thank you! I noted your profile. Which district or village are you applying from?`;
-        nextStep = 2;
+        // SMART KEYWORD MATCHING (Checks English, Hindi, and regional keywords)
+        const isFarming = /farm|kisan|krishi|kheti|cow|dairy|milk|agri|pashu|shet|sheti/i.test(textLower);
+        const isTailor = /tailor|silai|cloth|stitch|darzi|kapda|sew|shivan/i.test(textLower);
+        const isTech = /solar|tech|electric|computer|bijli|wire|light|mobile/i.test(textLower);
+
+        if (isFarming) {
+          botReplyText = currentLanguage === 'hi-IN'
+            ? "बहुत बढ़िया! कृषि और डेयरी में आपके अनुभव को देखते हुए, आप 'डेयरी फार्मिंग' के लिए ₹50,000 के पीएम-अजय अनुदान के पात्र हैं। आप किस जिले से आवेदन कर रहे हैं?"
+            : "Great! Given your experience in agriculture, you are eligible for the 'Dairy Farming' PM-AJAY grant of up to ₹50,000. Which district are you applying from?";
+          nextStep = 2;
+        } else if (isTailor) {
+          botReplyText = currentLanguage === 'hi-IN'
+            ? "शानदार! सिलाई में आपके कौशल के लिए, आप 'कस्टम टेलरिंग' उद्यम के तहत ₹50,000 के अनुदान के पात्र हैं। आप किस जिले या गांव से हैं?"
+            : "Awesome! For your sewing skills, you are eligible for the 'Custom Tailoring' enterprise grant up to ₹50,000. Which district or village are you from?";
+          nextStep = 2;
+        } else if (isTech) {
+          botReplyText = currentLanguage === 'hi-IN'
+            ? "उत्कृष्ट! तकनीकी क्षेत्र में, आप 'सोलर पैनल तकनीशियन' अनुदान के पात्र हैं। कृपया अपने जिले का नाम बताएं।"
+            : "Excellent! In the technical sector, you are eligible for the 'Solar Panel Technician' grant. Please tell me your district.";
+          nextStep = 2;
+        } else {
+          // GIBBERISH / UNKNOWN INPUT CATCHER
+          botReplyText = currentLanguage === 'hi-IN'
+            ? "माफ़ करें, मैं वह ठीक से समझ नहीं पाया। क्या आप स्पष्ट कर सकते हैं कि आप किस प्रकार का काम करते हैं? (जैसे: खेती, सिलाई, या बिजली का काम)"
+            : "Sorry, I didn't quite catch your specific skill. Could you clarify what kind of work you do? (e.g., farming, tailoring, or electrical work)";
+          nextStep = 1; // Keep them on step 1 until they provide a valid skill
+        }
       } else if (chatStep === 2) {
         botReplyText = currentLanguage === 'hi-IN'
-          ? `उत्कृष्ट! आपके क्षेत्र के अनुसार, आप ₹50,000 तक के पीएम-अजय उद्यम अनुदान के पात्र हैं। क्या मैं आपके लिए आवेदन प्रक्रिया शुरू करूं?`
-          : `Excellent! Based on your region, you are eligible for up to ₹50,000 in PM-AJAY enterprise grants. Shall I start your application?`;
+          ? `धन्यवाद! ${userText} जिले में आपके लिए योजनाएं उपलब्ध हैं। मैंने आपका प्रोफाइल बना लिया है। कृपया आवेदन पूरा करने के लिए 'कौशल और अनुदान मिलान' टैब पर जाएं।`
+          : `Thank you! Schemes are available in ${userText} district. I have built your profile. Please visit the 'Skill & Grant Matches' tab to complete your application.`;
         nextStep = 3;
       } else {
         botReplyText = currentLanguage === 'hi-IN'
-          ? `आपका आवेदन दर्ज कर लिया गया है। कृपया मुख्य पोर्टल पर जाएं या 'कौशल और अनुदान मिलान' टैब देखें।`
-          : `Your application request has been logged. Please check the 'Skill & Grant Matches' tab to complete verification.`;
+          ? "आपका प्रोफाइल पहले ही बन चुका है। कृपया ऊपर दिए गए टैब से अपना अनुदान देखें।"
+          : "Your profile is already built. Please check your grants from the tabs above.";
       }
 
       setChatStep(nextStep);
+      
       const newBotMsg = {
         id: Date.now(),
         sender: 'bot',
@@ -66,8 +93,8 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
       };
 
       setMessages(prev => [...prev, newBotMsg]);
-      playVoiceNote(newBotMsg.id, botReplyText);
-    }, 1000);
+      playVoiceNote(newBotMsg.id, botReplyText); // Speak the smart response out loud
+    }, 1200);
   };
 
   // Handle text message submission
