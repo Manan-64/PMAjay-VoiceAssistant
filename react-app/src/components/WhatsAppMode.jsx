@@ -1,248 +1,209 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { speakWithVoice } from '../lib/ttsService';
-import { translations } from '../data/translations';
 
 export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
-  const t = translations[currentLanguage] || translations['en-IN'];
+  const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
-  // Initial greeting message from the bot
+  // Initial AI greeting
   const [messages, setMessages] = useState([
     {
       id: 1,
       sender: 'bot',
-      type: 'audio',
-      text: t.waMockMsg || "Hello! I am the PM-AJAY Voice Bot. Please tell me your name and what work you do."
+      type: 'text',
+      text: currentLanguage.includes('hi') 
+        ? "नमस्ते! मैं पीएम-अजय योजना का आधिकारिक एआई गाइड हूँ। मैं आपको सरकारी अनुदान प्राप्त करने में मदद कर सकता हूँ। आप किस प्रकार का काम करते हैं?" 
+        : "Hello! I am the official PM-AJAY AI guide. I can help you secure government grants. What kind of work do you do or want to start?"
     }
   ]);
 
   const [inputText, setInputText] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [activeAudioId, setActiveAudioId] = useState(null);
-  const [chatStep, setChatStep] = useState(1);
   
   const chatEndRef = useRef(null);
 
-  // Auto-scroll to bottom of chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isTyping]);
 
-  // Handle playing voice notes
   const playVoiceNote = (id, text) => {
     setActiveAudioId(id);
-    speakWithVoice(text, currentLanguage, () => {
-      setActiveAudioId(null);
-    });
+    speakWithVoice(text, currentLanguage, () => setActiveAudioId(null));
   };
 
-  // Process bot responses based on conversation step
-  const triggerBotResponse = (userText) => {
-    // Show a small delay to simulate "AI thinking / typing"
-    setTimeout(() => {
-      let botReplyText = "";
-      let nextStep = chatStep;
-      
-      const textLower = userText.toLowerCase();
+  // The Persona & Instructions for Gemini
+  const systemPrompt = `You are a helpful, professional government guide for the PM-AJAY (Pradhan Mantri Anusuchit Jaati Abhyuday Yojana) scheme in India. 
+  Your goal is to help citizens figure out what business grants (up to ₹50,000) they qualify for based on their skills.
+  Rules:
+  1. Keep your answers VERY short and conversational (1-2 short sentences max), like a WhatsApp message.
+  2. Ask for their skills first. Then ask for their district/village. 
+  3. If they type nonsense, gently ask them to clarify what work they do.
+  4. If they don't understand, explain simply that PM-AJAY gives free money to start small businesses like farming, tailoring, or shops.
+  5. Reply in the language matching this code: ${currentLanguage}.`;
 
-      if (chatStep === 1) {
-        // SMART KEYWORD MATCHING (Checks English, Hindi, and regional keywords)
-        const isFarming = /farm|kisan|krishi|kheti|cow|dairy|milk|agri|pashu|shet|sheti/i.test(textLower);
-        const isTailor = /tailor|silai|cloth|stitch|darzi|kapda|sew|shivan/i.test(textLower);
-        const isTech = /solar|tech|electric|computer|bijli|wire|light|mobile/i.test(textLower);
+  const fetchGeminiResponse = async (userMessage, history) => {
+    if (!GEMINI_API_KEY) {
+      return "Error: Missing VITE_GEMINI_API_KEY in .env file.";
+    }
 
-        if (isFarming) {
-          botReplyText = currentLanguage === 'hi-IN'
-            ? "बहुत बढ़िया! कृषि और डेयरी में आपके अनुभव को देखते हुए, आप 'डेयरी फार्मिंग' के लिए ₹50,000 के पीएम-अजय अनुदान के पात्र हैं। आप किस जिले से आवेदन कर रहे हैं?"
-            : "Great! Given your experience in agriculture, you are eligible for the 'Dairy Farming' PM-AJAY grant of up to ₹50,000. Which district are you applying from?";
-          nextStep = 2;
-        } else if (isTailor) {
-          botReplyText = currentLanguage === 'hi-IN'
-            ? "शानदार! सिलाई में आपके कौशल के लिए, आप 'कस्टम टेलरिंग' उद्यम के तहत ₹50,000 के अनुदान के पात्र हैं। आप किस जिले या गांव से हैं?"
-            : "Awesome! For your sewing skills, you are eligible for the 'Custom Tailoring' enterprise grant up to ₹50,000. Which district or village are you from?";
-          nextStep = 2;
-        } else if (isTech) {
-          botReplyText = currentLanguage === 'hi-IN'
-            ? "उत्कृष्ट! तकनीकी क्षेत्र में, आप 'सोलर पैनल तकनीशियन' अनुदान के पात्र हैं। कृपया अपने जिले का नाम बताएं।"
-            : "Excellent! In the technical sector, you are eligible for the 'Solar Panel Technician' grant. Please tell me your district.";
-          nextStep = 2;
-        } else {
-          // GIBBERISH / UNKNOWN INPUT CATCHER
-          botReplyText = currentLanguage === 'hi-IN'
-            ? "माफ़ करें, मैं वह ठीक से समझ नहीं पाया। क्या आप स्पष्ट कर सकते हैं कि आप किस प्रकार का काम करते हैं? (जैसे: खेती, सिलाई, या बिजली का काम)"
-            : "Sorry, I didn't quite catch your specific skill. Could you clarify what kind of work you do? (e.g., farming, tailoring, or electrical work)";
-          nextStep = 1; // Keep them on step 1 until they provide a valid skill
+    try {
+      // Format history for Gemini API
+      const formattedHistory = history.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: systemPrompt }] },
+            contents: [
+              ...formattedHistory,
+              { role: 'user', parts: [{ text: userMessage }] }
+            ]
+          })
         }
-      } else if (chatStep === 2) {
-        botReplyText = currentLanguage === 'hi-IN'
-          ? `धन्यवाद! ${userText} जिले में आपके लिए योजनाएं उपलब्ध हैं। मैंने आपका प्रोफाइल बना लिया है। कृपया आवेदन पूरा करने के लिए 'कौशल और अनुदान मिलान' टैब पर जाएं।`
-          : `Thank you! Schemes are available in ${userText} district. I have built your profile. Please visit the 'Skill & Grant Matches' tab to complete your application.`;
-        nextStep = 3;
-      } else {
-        botReplyText = currentLanguage === 'hi-IN'
-          ? "आपका प्रोफाइल पहले ही बन चुका है। कृपया ऊपर दिए गए टैब से अपना अनुदान देखें।"
-          : "Your profile is already built. Please check your grants from the tabs above.";
+      );
+
+      const data = await response.json();
+      if (data.candidates && data.candidates.length > 0) {
+        return data.candidates[0].content.parts[0].text;
       }
-
-      setChatStep(nextStep);
-      
-      const newBotMsg = {
-        id: Date.now(),
-        sender: 'bot',
-        type: 'audio',
-        text: botReplyText
-      };
-
-      setMessages(prev => [...prev, newBotMsg]);
-      playVoiceNote(newBotMsg.id, botReplyText); // Speak the smart response out loud
-    }, 1200);
+      return "I am currently facing network issues. Please try again.";
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      return "There was an error connecting to the AI server.";
+    }
   };
 
-  // Handle text message submission
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
+  const handleSendMessage = async (e, voiceTranscript = null) => {
+    if (e) e.preventDefault();
+    const textToSend = voiceTranscript || inputText;
+    if (!textToSend.trim()) return;
 
-    const userMsg = {
-      id: Date.now(),
-      sender: 'user',
-      type: 'text',
-      text: inputText
-    };
-
-    setMessages(prev => [...prev, userMsg]);
-    const userInput = inputText;
+    // 1. Add user message to UI
+    const newUserMsg = { id: Date.now(), sender: 'user', type: 'text', text: textToSend };
+    const updatedMessages = [...messages, newUserMsg];
+    setMessages(updatedMessages);
     setInputText('');
+    setIsTyping(true);
+
+    // 2. Fetch AI response
+    const aiReplyText = await fetchGeminiResponse(textToSend, messages);
     
-    triggerBotResponse(userInput);
+    // 3. Add AI response to UI
+    const newBotMsg = { id: Date.now() + 1, sender: 'bot', type: 'text', text: aiReplyText };
+    setMessages(prev => [...prev, newBotMsg]);
+    setIsTyping(false);
+
+    // 4. Auto-play the AI's response aloud
+    playVoiceNote(newBotMsg.id, aiReplyText);
   };
 
-  // Handle Speech-to-Text Microphone Input
   const handleMicClick = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+      alert("Speech recognition not supported in this browser.");
       return;
     }
-
     const recognition = new SpeechRecognition();
     recognition.lang = currentLanguage;
     recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
+    
     setIsListening(true);
 
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setIsListening(false);
-
-      const userMsg = {
-        id: Date.now(),
-        sender: 'user',
-        type: 'audio',
-        text: transcript
-      };
-
-      setMessages(prev => [...prev, userMsg]);
-      triggerBotResponse(transcript);
+      handleSendMessage(null, transcript);
     };
 
-    recognition.onerror = (err) => {
-      console.error("Speech recognition error:", err);
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    try {
-      recognition.start();
-    } catch (e) {
-      setIsListening(false);
-    }
+    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => setIsListening(false);
+    recognition.start();
   };
 
   return (
-    <div className="max-w-md mx-auto bg-slate-900 rounded-[40px] p-4 shadow-2xl border-4 border-slate-700 my-6">
-      {/* WhatsApp Header */}
-      <div className="bg-emerald-800 text-white p-3 rounded-t-3xl flex items-center justify-between shadow-md">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-lg">
+    <div className="w-full h-[75vh] flex flex-col bg-slate-50 border border-gray-200 shadow-xl rounded-2xl overflow-hidden mt-4">
+      {/* Web Chat Header */}
+      <div className="bg-slate-900 text-white p-4 flex items-center justify-between shadow-md z-10">
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center font-bold text-2xl shadow-inner">
             🤖
           </div>
           <div>
-            <h2 className="font-bold text-sm">PM-AJAY Voice Bot</h2>
-            <p className="text-xs text-emerald-200">{t.waOnline || "online"}</p>
+            <h2 className="font-bold text-lg">PM-AJAY Sahayata AI Guide</h2>
+            <p className="text-sm text-green-400 flex items-center">
+              <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+              Live AI connected
+            </p>
           </div>
-        </div>
-        <div className="flex space-x-3 text-emerald-200">
-          <span>📞</span>
-          <span>⋮</span>
         </div>
       </div>
 
       {/* Chat Messages Body */}
-      <div className="bg-[#efeae2] p-4 h-[400px] overflow-y-auto flex flex-col space-y-3">
+      <div className="flex-1 bg-[#f0f2f5] p-6 overflow-y-auto flex flex-col space-y-6">
         {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`max-w-[80%] p-3 rounded-xl shadow-sm text-sm relative ${
+          <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[70%] p-4 rounded-2xl shadow-sm text-base relative ${
               msg.sender === 'user'
-                ? 'bg-[#dcf8c6] self-end rounded-tr-none text-slate-900'
-                : 'bg-white self-start rounded-tl-none text-slate-900'
-            }`}
-          >
-            {msg.type === 'audio' ? (
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => playVoiceNote(msg.id, msg.text)}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-white transition-all ${
-                    activeAudioId === msg.id ? 'bg-red-500 animate-pulse' : 'bg-emerald-600 hover:bg-emerald-700'
-                  }`}
-                  title="Play Voice Note"
-                >
-                  {activeAudioId === msg.id ? '⏹️' : '▶'}
-                </button>
-                <div className="flex-1">
-                  <div className="flex items-center space-x-1 mb-1">
-                    <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-medium">
-                      🎤 Voice Note
-                    </span>
-                  </div>
-                  <p className="font-medium text-xs leading-relaxed">{msg.text}</p>
-                </div>
+                ? 'bg-blue-600 text-white rounded-tr-sm'
+                : 'bg-white text-slate-800 rounded-tl-sm border border-gray-100'
+            }`}>
+              <div className="flex flex-col">
+                <p className="leading-relaxed">{msg.text}</p>
+                {msg.sender === 'bot' && (
+                  <button
+                    onClick={() => playVoiceNote(msg.id, msg.text)}
+                    className={`mt-3 self-start flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                      activeAudioId === msg.id ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                    }`}
+                  >
+                    <span>{activeAudioId === msg.id ? '⏹️ Playing Audio...' : '▶ Play Aloud'}</span>
+                  </button>
+                )}
               </div>
-            ) : (
-              <p className="text-sm">{msg.text}</p>
-            )}
-            <span className="block text-[9px] text-gray-500 text-right mt-1">10:42 AM</span>
+            </div>
           </div>
         ))}
+        {isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm flex space-x-2 items-center">
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></div>
+            </div>
+          </div>
+        )}
         <div ref={chatEndRef} />
       </div>
 
-      {/* WhatsApp Input Footer */}
-      <form onSubmit={handleSendMessage} className="bg-slate-800 p-3 rounded-b-3xl flex items-center space-x-2">
+      {/* Web Chat Input Footer */}
+      <form onSubmit={handleSendMessage} className="bg-white p-4 border-t border-gray-200 flex items-center space-x-4">
+        <button
+          type="button"
+          onClick={handleMicClick}
+          className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl transition-all shadow-md ${
+            isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+          title="Speak to AI"
+        >
+          🎙️
+        </button>
         <input
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder={t.waInput || "Type a message..."}
-          className="flex-1 bg-slate-700 text-white px-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          placeholder="Type your message to the AI Guide..."
+          className="flex-1 bg-gray-100 text-slate-800 px-6 py-4 rounded-full text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all border border-transparent"
         />
         <button
-          type="button"
-          onClick={handleMicClick}
-          className={`w-10 h-10 rounded-full flex items-center justify-center text-white transition-all ${
-            isListening ? 'bg-red-500 animate-ping' : 'bg-slate-700 hover:bg-slate-600'
-          }`}
-          title="Speak via Microphone"
-        >
-          🎙️
-        </button>
-        <button
           type="submit"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all"
+          className="bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-md transition-all"
         >
           ➤
         </button>
