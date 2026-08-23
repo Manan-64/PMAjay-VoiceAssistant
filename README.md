@@ -102,7 +102,7 @@ This project is strictly designed around the **Ministry of Social Justice and Em
 
 ## 👥 Team
 
-* **[Your Name]** - System Architecture & UI Development
-* **[Teammate Name]** - Prompt Engineering, Data Architecture & Policy Research
+* **[Team Name]** - Byte Banditos
+
 
 Made for the **Smart India Hackathon**.
