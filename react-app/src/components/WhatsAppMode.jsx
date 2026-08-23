@@ -154,7 +154,7 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
   6. REGISTRATION: If they want to register, give them this link: https://pmajay.dosje.gov.in/
   7. Reply naturally in the language matching this code: ${currentLanguage}.`;
 
-  const localFallbackResponse = (userMessage, language) => {
+  const localFallbackResponse = (userMessage, language, history) => {
     const msg = userMessage.toLowerCase();
     
     // Quick keyword dictionary mapped to [Trade Name, Setup Cost]
@@ -164,15 +164,48 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
       { keywords: ['tailor', 'stitching', 'sewing', 'clothes', 'darzi', 'कपड़े', 'दर्जी', 'सिलाई'], name: 'Custom Tailoring', cost: '₹15,000' },
       { keywords: ['solar', 'electricity', 'panel', 'सौर'], name: 'Solar Panel Technician', cost: '₹18,000' },
       { keywords: ['beauty', 'salon', 'makeup', 'parlor', 'parlour', 'hair', 'पार्लर'], name: 'Beauty Parlor', cost: '₹15,000' },
-      { keywords: ['mobile', 'phone', 'repair', 'મોબાઇલ', 'మొబైల్'], name: 'Mobile Repair Shop', cost: '₹12,000' },
+      { keywords: ['mobile', 'phone', 'repair', 'મોબાઇલ', 'మొబైల్'], name: 'Mobile Phone Repair Shop', cost: '₹12,000' },
       { keywords: ['rickshaw', 'auto', 'driving', 'driver', 'e-rickshaw', 'रिक्शा'], name: 'E-Rickshaw Operation', cost: '₹1,20,000' },
-      { keywords: ['grocery', 'kirana', 'store', 'shop', 'dukan', 'दुकान', 'किराना'], name: 'Kirana Store', cost: '₹30,000' },
+      { keywords: ['grocery', 'kirana', 'store', 'shop', 'dukan', 'दुकान', 'किराना'], name: 'Grocery / Kirana Store', cost: '₹30,000' },
       { keywords: ['plumber', 'plumbing', 'pipe', 'water', 'प्लंबर'], name: 'Plumbing Services', cost: '₹10,000' },
       { keywords: ['mechanic', 'bike', 'scooter', 'motorcycle', 'मैकेनिक'], name: 'Two-Wheeler Mechanic', cost: '₹15,000' },
       { keywords: ['carpenter', 'wood', 'furniture', 'badhai', 'बढ़ई'], name: 'Carpentry', cost: '₹18,000' },
       { keywords: ['csc', 'computer', 'online', 'center', 'internet', 'digital', 'कंप्यूटर'], name: 'Common Service Center (CSC)', cost: '₹40,000' }
     ];
 
+    // 1. Check for REGISTRATION intent
+    if (msg.includes('register') || msg.includes('apply') || msg.includes('proceed') || msg.includes('पंजीकरण') || msg.includes('आवेदन')) {
+      if (language.includes('hi')) return "(ऑफ़लाइन मोड) बहुत बढ़िया! आप इस आधिकारिक लिंक पर जाकर पंजीकरण कर सकते हैं:\nhttps://pmajay.dosje.gov.in/";
+      return "(Offline Mode) Congratulations on making a choice! You can proceed to register on the official portal here:\nhttps://pmajay.dosje.gov.in/";
+    }
+
+    // 2. Check for DETAILS intent
+    if (msg.includes('detail') || msg.includes('breakdown') || msg.includes('cost') || msg.includes('विवरण') || msg.includes('खर्च') || msg.includes('equipment')) {
+      // Find last matched trade in history
+      let lastTrade = null;
+      const allText = history.map(h => h.text).join(' ');
+      for (const trade of tradeMap) {
+        if (allText.includes(trade.name)) {
+          lastTrade = trade;
+          break;
+        }
+      }
+
+      if (lastTrade) {
+        // Extract breakdown directly from our grantData string
+        const regexName = lastTrade.name.split(' ')[0]; // E.g., 'Poultry', 'Mobile'
+        const regex = new RegExp(`${regexName}.*?Itemized Breakdown:([\\s\\S]*?)- Related Alternatives`, 'i');
+        const match = grantData.match(regex);
+        let breakdownText = match ? match[1].trim() : "Details available on the official portal.";
+        
+        if (language.includes('hi')) {
+          return `(ऑफ़लाइन मोड) यहाँ **${lastTrade.name}** के लिए लागत का विवरण है:\n\n${breakdownText}\n\nक्या आप पंजीकरण करना चाहते हैं या अन्य विकल्प देखना चाहते हैं?`;
+        }
+        return `(Offline Mode) Here is the detailed breakdown for **${lastTrade.name}**:\n\n${breakdownText}\n\nWould you like to proceed to register, or explore alternative options?`;
+      }
+    }
+
+    // 3. Check for SKILL MATCHING
     let matchedTrade = null;
     for (const trade of tradeMap) {
       if (trade.keywords.some(kw => msg.includes(kw))) {
@@ -183,11 +216,12 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
 
     if (matchedTrade) {
       if (language.includes('hi')) {
-        return `(ऑफ़लाइन मोड) मुझे आपका काम समझ आ गया! **${matchedTrade.name}** आपके लिए सही विकल्प है। इसकी कुल लागत लगभग ${matchedTrade.cost} है, जिसमें सरकार आपको **₹10,000 की सब्सिडी** देगी।\n\nक्या आप विस्तृत लागत विवरण जानना चाहते हैं, अन्य विकल्प तलाशना चाहते हैं, या पंजीकरण के लिए आगे बढ़ना चाहते हैं?`;
+        return `(ऑफ़लाइन मोड) मुझे आपका काम समझ आ गया! **${matchedTrade.name}** आपके लिए सही विकल्प है। कुल सेटअप लागत ${matchedTrade.cost} है, जिसमें आपको **₹10,000 की सब्सिडी** मिलेगी।\n\nआप आगे क्या करना चाहेंगे?\n1. विस्तृत लागत विवरण\n2. पंजीकरण के लिए आगे बढ़ें\n3. अन्य विकल्प तलाशें`;
       }
-      return `(Offline Mode) I found a match! **${matchedTrade.name}** is a great fit for you. The total setup cost is approximately ${matchedTrade.cost}, and the government provides a strict **subsidy of ₹10,000**.\n\nWould you like a detailed cost breakdown, explore other options, or proceed to register?`;
+      return `(Offline Mode) I found a match! **${matchedTrade.name}** is a great fit for you. The total setup cost is approximately ${matchedTrade.cost}, with a strict government **subsidy of ₹10,000**.\n\nHow would you like to proceed?\n1. Detailed cost breakdown\n2. Proceed to register\n3. Explore alternative options`;
     }
 
+    // 4. FALLBACK
     if (language.includes('hi')) {
       return "(ऑफ़लाइन मोड) क्षमा करें, मुझे आपका काम समझ नहीं आया। क्या आप सिलाई, मुर्गी पालन, या डेयरी जैसे किसी अन्य काम का उल्लेख कर सकते हैं?";
     }
@@ -234,7 +268,7 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
       if (data.error) {
         if (data.error.code === 429 || response.status === 429) {
           console.warn("Google API Rate Limit (429) hit. Falling back to local matcher.");
-          return localFallbackResponse(userMessage, currentLanguage);
+          return localFallbackResponse(userMessage, currentLanguage, history);
         }
         console.error("Google API Error:", data.error);
         return `Google API Error: ${data.error.message}`;
@@ -249,7 +283,7 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
       console.error("Fetch Error:", error);
       // Fallback on network error as well just in case
       console.warn("Network error hit. Falling back to local matcher.");
-      return localFallbackResponse(userMessage, currentLanguage);
+      return localFallbackResponse(userMessage, currentLanguage, history);
     }
   };
 
