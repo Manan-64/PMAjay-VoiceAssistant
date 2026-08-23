@@ -154,6 +154,46 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
   6. REGISTRATION: If they want to register, give them this link: https://pmajay.dosje.gov.in/
   7. Reply naturally in the language matching this code: ${currentLanguage}.`;
 
+  const localFallbackResponse = (userMessage, language) => {
+    const msg = userMessage.toLowerCase();
+    
+    // Quick keyword dictionary mapped to [Trade Name, Setup Cost]
+    const tradeMap = [
+      { keywords: ['poultry', 'chicken', 'farm', 'murgi', 'मुर्गी'], name: 'Poultry Farm', cost: '₹20,000' },
+      { keywords: ['dairy', 'milk', 'cow', 'cattle', 'doodh', 'भैंस', 'गाय', 'दूध'], name: 'Dairy Farming', cost: '₹25,000' },
+      { keywords: ['tailor', 'stitching', 'sewing', 'clothes', 'darzi', 'कपड़े', 'दर्जी', 'सिलाई'], name: 'Custom Tailoring', cost: '₹15,000' },
+      { keywords: ['solar', 'electricity', 'panel', 'सौर'], name: 'Solar Panel Technician', cost: '₹18,000' },
+      { keywords: ['beauty', 'salon', 'makeup', 'parlor', 'parlour', 'hair', 'पार्लर'], name: 'Beauty Parlor', cost: '₹15,000' },
+      { keywords: ['mobile', 'phone', 'repair', 'મોબાઇલ', 'మొబైల్'], name: 'Mobile Repair Shop', cost: '₹12,000' },
+      { keywords: ['rickshaw', 'auto', 'driving', 'driver', 'e-rickshaw', 'रिक्शा'], name: 'E-Rickshaw Operation', cost: '₹1,20,000' },
+      { keywords: ['grocery', 'kirana', 'store', 'shop', 'dukan', 'दुकान', 'किराना'], name: 'Kirana Store', cost: '₹30,000' },
+      { keywords: ['plumber', 'plumbing', 'pipe', 'water', 'प्लंबर'], name: 'Plumbing Services', cost: '₹10,000' },
+      { keywords: ['mechanic', 'bike', 'scooter', 'motorcycle', 'मैकेनिक'], name: 'Two-Wheeler Mechanic', cost: '₹15,000' },
+      { keywords: ['carpenter', 'wood', 'furniture', 'badhai', 'बढ़ई'], name: 'Carpentry', cost: '₹18,000' },
+      { keywords: ['csc', 'computer', 'online', 'center', 'internet', 'digital', 'कंप्यूटर'], name: 'Common Service Center (CSC)', cost: '₹40,000' }
+    ];
+
+    let matchedTrade = null;
+    for (const trade of tradeMap) {
+      if (trade.keywords.some(kw => msg.includes(kw))) {
+        matchedTrade = trade;
+        break;
+      }
+    }
+
+    if (matchedTrade) {
+      if (language.includes('hi')) {
+        return `(ऑफ़लाइन मोड) मुझे आपका काम समझ आ गया! **${matchedTrade.name}** आपके लिए सही विकल्प है। इसकी कुल लागत लगभग ${matchedTrade.cost} है, जिसमें सरकार आपको **₹10,000 की सब्सिडी** देगी।\n\nक्या आप विस्तृत लागत विवरण जानना चाहते हैं, अन्य विकल्प तलाशना चाहते हैं, या पंजीकरण के लिए आगे बढ़ना चाहते हैं?`;
+      }
+      return `(Offline Mode) I found a match! **${matchedTrade.name}** is a great fit for you. The total setup cost is approximately ${matchedTrade.cost}, and the government provides a strict **subsidy of ₹10,000**.\n\nWould you like a detailed cost breakdown, explore other options, or proceed to register?`;
+    }
+
+    if (language.includes('hi')) {
+      return "(ऑफ़लाइन मोड) क्षमा करें, मुझे आपका काम समझ नहीं आया। क्या आप सिलाई, मुर्गी पालन, या डेयरी जैसे किसी अन्य काम का उल्लेख कर सकते हैं?";
+    }
+    return "(Offline Mode) I couldn't match that to our scheme data. Could you try mentioning a specific skill like tailoring, poultry, dairy, or solar?";
+  };
+
   const fetchGeminiResponse = async (userMessage, history) => {
     if (!GEMINI_API_KEY) {
       return "Error: Missing VITE_GEMINI_API_KEY in .env file.";
@@ -192,6 +232,10 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
       
       // SHOW EXACT ERRORS IN THE CHAT
       if (data.error) {
+        if (data.error.code === 429 || response.status === 429) {
+          console.warn("Google API Rate Limit (429) hit. Falling back to local matcher.");
+          return localFallbackResponse(userMessage, currentLanguage);
+        }
         console.error("Google API Error:", data.error);
         return `Google API Error: ${data.error.message}`;
       }
@@ -203,7 +247,9 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
       return "Error: Received empty response from Google AI.";
     } catch (error) {
       console.error("Fetch Error:", error);
-      return "Network Error: Could not reach Google's servers. Check your internet connection.";
+      // Fallback on network error as well just in case
+      console.warn("Network error hit. Falling back to local matcher.");
+      return localFallbackResponse(userMessage, currentLanguage);
     }
   };
 
