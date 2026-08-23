@@ -34,8 +34,16 @@ export const speakWithVoice = (text, langCode = 'hi-IN', onComplete = null) => {
     if (window.responsiveVoice) {
       playRV();
     } else {
-      console.warn("[TTS] ResponsiveVoice SDK not found.");
-      if (onComplete) onComplete();
+      console.warn("[TTS] ResponsiveVoice failed to load from index.html.");
+      // Fallback to GTX if RV fails to load
+      const safeText = text.length > 150 ? text.substring(0, 147) + '...' : text;
+      const url = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=${baseLang}&q=${encodeURIComponent(safeText)}`;
+
+      const audioEl = document.createElement('audio');
+      audioEl.src = url;
+      audioEl.play().catch(e => console.error(e));
+
+      setTimeout(() => { if (onComplete) onComplete(); }, 3000);
     }
   } 
   // 2. For Marathi (mr), Telugu (te), Gujarati (gu), route to Google GTX Cloud Audio
