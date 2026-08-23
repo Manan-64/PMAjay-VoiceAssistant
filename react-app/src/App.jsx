@@ -5,6 +5,7 @@ import { analyzeBeneficiarySituation } from './lib/aiMatcher';
 import { speakWithVoice } from './lib/ttsService';
 import { translations, audioTemplates } from './data/translations';
 import WhatsAppMode from './components/WhatsAppMode';
+import DistrictAdmin from './components/DistrictAdmin';
 import './App.css';
 
 const LANGUAGES = {
@@ -767,28 +768,8 @@ function App() {
           )}
 
           {activeTab === 'admin' && (
-            <div>
-              <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <BarChart3 className="text-orange-600" />
-                {t.adminTitle}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                  <div className="text-orange-800 font-medium mb-1">{t.adminTotalBen}</div>
-                  <div className="text-3xl font-bold text-orange-600">12,450</div>
-                </div>
-                <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                  <div className="text-green-800 font-medium mb-1">{t.adminFunds}</div>
-                  <div className="text-3xl font-bold text-green-600">₹4.2 Cr</div>
-                </div>
-                <div className="bg-slate-100 p-6 rounded-lg border border-slate-300">
-                  <div className="text-slate-700 font-medium mb-1">{t.adminPending}</div>
-                  <div className="text-3xl font-bold text-slate-800">842</div>
-                </div>
-              </div>
-              <div className="bg-slate-50 h-64 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400">
-                {t.adminChartPlaceholder}
-              </div>
+            <div className="animate-in fade-in">
+              <DistrictAdmin />
             </div>
           )}
         </div>
