@@ -3,6 +3,7 @@ import { Mic, CheckSquare, MessageCircle, BarChart3, Globe, Square, Zap, Bot, Ch
 import { nsqfData } from './data/nsqfData';
 import { analyzeBeneficiarySituation } from './lib/aiMatcher';
 import { speakWithVoice } from './lib/ttsService';
+import { translations, audioTemplates } from './data/translations';
 import './App.css';
 
 const LANGUAGES = {
@@ -60,6 +61,72 @@ const questions = {
   }
 };
 
+const uiDict = {
+  'en-IN': {
+    budgetTitle: "PM-AJAY GIA ENTERPRISE BUDGET",
+    totalCost: "TOTAL SETUP COST",
+    subsidy: "GOVT SUBSIDY",
+    loan: "BANK LOAN / SELF",
+    applyBtn: "Apply for PM-AJAY GIA",
+    listenBtn: "Listen in Regional Voice",
+    sectorLabel: "Sector"
+  },
+  'hi-IN': {
+    budgetTitle: "पीएम-अजय जीआईए उद्यम बजट",
+    totalCost: "कुल लागत",
+    subsidy: "सरकारी सब्सिडी",
+    loan: "बैंक लोन / स्वयं",
+    applyBtn: "पीएम-अजय के लिए आवेदन करें",
+    listenBtn: "क्षेत्रीय भाषा में सुनें",
+    sectorLabel: "क्षेत्र"
+  },
+  'mr-IN': {
+    budgetTitle: "पीएम-अजय जीआयए उद्योग बजेट",
+    totalCost: "एकूण खर्च",
+    subsidy: "सरकारी अनुदान",
+    loan: "बँक कर्ज / स्वतः",
+    applyBtn: "पीएम-अजय साठी अर्ज करा",
+    listenBtn: "प्रादेशिक भाषेत ऐका",
+    sectorLabel: "क्षेत्र"
+  },
+  'ta-IN': {
+    budgetTitle: "PM-AJAY GIA நிறுவன பட்ஜெட்",
+    totalCost: "மொத்த அமைப்பு செலவு",
+    subsidy: "அரசு மானியம்",
+    loan: "வங்கி கடன் / சுய",
+    applyBtn: "PM-AJAY க்கு விண்ணப்பிக்கவும்",
+    listenBtn: "பிராந்திய மொழியில் கேளுங்கள்",
+    sectorLabel: "துறை"
+  },
+  'bn-IN': {
+    budgetTitle: "পিএম-অজয় জিআইএ এন্টারপ্রাইজ বাজেট",
+    totalCost: "মোট খরচ",
+    subsidy: "সরকারি ভর্তুকি",
+    loan: "ব্যাংক ঋণ / নিজস্ব",
+    applyBtn: "পিএম-অজয়ের জন্য আবেদন করুন",
+    listenBtn: "আঞ্চলিক ভাষায় শুনুন",
+    sectorLabel: "খাত"
+  },
+  'te-IN': {
+    budgetTitle: "PM-AJAY GIA ఎంటర్‌ప్రైజ్ బడ్జెట్",
+    totalCost: "మొత్తం ఖర్చు",
+    subsidy: "ప్రభుత్వ సబ్సిడీ",
+    loan: "బ్యాంకు రుణం / సొంతం",
+    applyBtn: "PM-AJAY కోసం దరఖాస్తు చేయండి",
+    listenBtn: "ప్రాంతీయ భాషలో వినండి",
+    sectorLabel: "రంగం"
+  },
+  'gu-IN': {
+    budgetTitle: "પીએમ-અજય જીઆઈએ એન્ટરપ્રાઇઝ બજેટ",
+    totalCost: "કુલ ખર્ચ",
+    subsidy: "સરકારી સબસિડી",
+    loan: "બેંક લોન / સ્વયં",
+    applyBtn: "પીએમ-અજય માટે અરજી કરો",
+    listenBtn: "પ્રાદેશિક ભાષામાં સાંભળો",
+    sectorLabel: "ક્ષેત્ર"
+  }
+};
+
 function App() {
   const [activeTab, setActiveTab] = useState('voice');
   const [currentLanguage, setCurrentLanguage] = useState('hi-IN');
@@ -86,11 +153,13 @@ function App() {
 
   const recognitionRef = useRef(null);
 
+  const t = translations[currentLanguage] || translations['en-IN'];
+
   const tabs = [
-    { id: 'voice', label: '🎙️ Voice Assistant' },
-    { id: 'matches', label: '📋 Skill & Grant Matches' },
-    { id: 'whatsapp', label: '💬 WhatsApp Mode' },
-    { id: 'admin', label: '📊 District Admin' },
+    { id: 'voice', label: t.tabVoice },
+    { id: 'matches', label: t.tabGrants },
+    { id: 'whatsapp', label: t.tabWhatsapp },
+    { id: 'admin', label: t.tabAdmin },
   ];
 
   // Auto-trigger TTS when navigating to a step (only when started)
@@ -180,14 +249,16 @@ function App() {
     }
   };
 
-  const speakTrade = (trade) => {
-    let text = "";
-    if (currentLanguage === 'en-IN') {
-      text = trade.title + ". Total cost is " + trade.totalSetupCost + " rupees, with a government subsidy of " + trade.subsidyAmount + " rupees.";
-    } else {
-      text = trade.title + "। इसके लिए कुल लागत " + trade.totalSetupCost + " रुपये है, जिसमें आपको " + trade.subsidyAmount + " रुपये की सरकारी सब्सिडी मिलेगी।";
-    }
-    speakWithVoice(text, currentLanguage === 'en-IN' ? 'en-IN' : 'hi-IN');
+  const handlePlayAudio = (trade) => {
+    let template = audioTemplates[currentLanguage] || audioTemplates['en-IN'];
+    const jobName = trade.localTitle?.[currentLanguage] || trade.title;
+    template = template.replace('[JOB]', jobName)
+                       .replace('[TOTAL]', trade.totalSetupCost)
+                       .replace('[SUBSIDY]', trade.subsidyAmount)
+                       .replace('[SELF]', trade.selfContribution);
+    
+    // Optional: could add an isSpeaking state, but speakWithVoice handles it
+    speakWithVoice(template, currentLanguage);
   };
 
   const fullTranscript = useMemo(() => {
@@ -307,7 +378,7 @@ function App() {
               <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
                 <span className="text-orange-500">PM-AJAY</span> Sahayata
               </h1>
-              <p className="text-sm text-slate-300 font-medium">Pradhan Mantri Anusuchit Jaati Abhyuday Yojana</p>
+              <p className="text-sm text-slate-300 font-medium">{t.appSubtitle}</p>
             </div>
           </div>
           
@@ -363,21 +434,21 @@ function App() {
             <div className="flex flex-col h-full max-w-4xl mx-auto">
               <div className="bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg p-3 mb-8 w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-4">
                 <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-1 flex-shrink-0">
-                  <span className="text-lg">🛠️</span> Judge's Testing Panel
+                  <span className="text-lg">🛠️</span> {t.demoPanelTitle}
                 </h3>
                 <div className="flex flex-wrap justify-center sm:justify-start gap-2 w-full">
                   <button onClick={() => runScenario('A')} className="text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-500 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300 px-2 py-1 rounded-full transition-colors">
-                    A: Farmer
+                    {t.demoFarmer}
                   </button>
                   <button onClick={() => runScenario('B')} className="text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-500 hover:bg-green-50 hover:text-green-600 hover:border-green-300 px-2 py-1 rounded-full transition-colors">
-                    B: Tailor
+                    {t.demoTailor}
                   </button>
                   <button onClick={() => runScenario('C')} className="text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 px-2 py-1 rounded-full transition-colors">
-                    C: Tech Youth
+                    {t.demoTech}
                   </button>
                   {(hasStarted || currentStep === 5) && (
                     <button onClick={resetInterview} className="text-[10px] font-bold uppercase bg-slate-700 text-white hover:bg-slate-900 px-2 py-1 rounded-full transition-colors ml-auto">
-                      Reset
+                      {t.demoReset}
                     </button>
                   )}
                 </div>
@@ -388,16 +459,16 @@ function App() {
                   <div className="w-24 h-24 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mb-6">
                     <Mic className="w-12 h-12" />
                   </div>
-                  <h2 className="text-3xl font-bold text-slate-800 mb-4">Voice Profile Creation</h2>
+                  <h2 className="text-3xl font-bold text-slate-800 mb-4">{t.voiceEntryTitle}</h2>
                   <p className="text-slate-600 mb-8 max-w-lg">
-                    Follow the voice-guided interview to automatically match your skills and goals with PM-AJAY enterprise grants.
+                    {t.voiceEntrySub}
                   </p>
                   <button 
                     onClick={startIntro}
                     className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold shadow-lg transition-transform transform hover:scale-105 flex items-center gap-3 text-lg"
                   >
                     <Play className="w-6 h-6 fill-current" />
-                    {currentLanguage === 'hi-IN' ? 'वॉयस प्रोफाइल बनाना शुरू करें' : 'Start Voice Profile Creation'}
+                    {t.startBtn}
                   </button>
                 </div>
               ) : currentStep <= 4 ? (
@@ -458,12 +529,12 @@ function App() {
                               <span className="absolute inline-flex h-8 w-8 rounded-full bg-white opacity-50 animate-ping"></span>
                               <Mic className="w-6 h-6 relative z-10 animate-pulse" />
                             </div>
-                            Listening... Speak Now
+                            {t.micListening}
                           </>
                         ) : (
                           <>
                             <Mic className="w-6 h-6" />
-                            Tap Microphone to Answer
+                            {t.micTap}
                           </>
                         )}
                       </button>
@@ -571,39 +642,46 @@ function App() {
                           </div>
                           
                           <h3 className="text-xl font-bold text-slate-800 mb-2 leading-tight">
-                            {trade.title}
+                            {trade.localTitle?.[currentLanguage] || trade.title}
                           </h3>
                           
                           <div className="flex items-center gap-2 text-sm text-slate-600 mb-6">
                             <Briefcase className="w-4 h-4" />
-                            Sector: <span className="font-medium text-slate-800">{trade.sector}</span>
+                            {uiDict[currentLanguage]?.sectorLabel || "Sector"}: <span className="font-medium text-slate-800">{trade.localSector?.[currentLanguage] || trade.sector}</span>
                           </div>
 
                           <div className="flex flex-col gap-2 mt-auto">
-                            <button className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-lg font-bold shadow-md transition-colors flex items-center justify-center gap-2">
-                              <CheckSquare className="w-5 h-5" />
-                              Apply for PM-AJAY GIA
-                            </button>
+                            <a 
+                              href="https://pmajay.dosje.gov.in/" 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="block"
+                            >
+                              <button className="w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-lg font-bold shadow-md transition-colors flex items-center justify-center gap-2">
+                                <CheckSquare className="w-5 h-5" />
+                                {uiDict[currentLanguage]?.applyBtn || "Apply for PM-AJAY GIA"}
+                              </button>
+                            </a>
                             
                             <button 
-                              onClick={() => speakTrade(trade)}
+                              onClick={() => handlePlayAudio(trade)}
                               className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                             >
                               <Volume2 className="w-5 h-5 text-slate-600" />
-                              Listen in Regional Voice (सुनिए)
+                              {uiDict[currentLanguage]?.listenBtn || "Listen in Regional Voice"}
                             </button>
                           </div>
                         </div>
 
                         <div className="p-6 md:w-7/12 flex flex-col justify-center">
                           <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">
-                            PM-AJAY GIA Enterprise Budget
+                            {uiDict[currentLanguage]?.budgetTitle || "PM-AJAY GIA Enterprise Budget"}
                           </h4>
                           
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div className="bg-slate-100 p-4 rounded-lg border border-slate-200">
                               <div className="text-slate-500 text-xs font-bold uppercase mb-1 flex items-center gap-1">
-                                <Building className="w-3 h-3" /> Total Setup Cost
+                                <Building className="w-3 h-3" /> {uiDict[currentLanguage]?.totalCost || "Total Setup Cost"}
                               </div>
                               <div className="text-xl font-bold text-slate-800 flex items-center">
                                 <IndianRupee className="w-5 h-5 text-slate-400" />
@@ -616,7 +694,7 @@ function App() {
                                 <Building className="w-20 h-20 text-green-600" />
                               </div>
                               <div className="text-green-800 text-xs font-bold uppercase mb-1 flex items-center gap-1">
-                                <Wallet className="w-3 h-3" /> Govt Subsidy
+                                <Wallet className="w-3 h-3" /> {uiDict[currentLanguage]?.subsidy || "Govt Subsidy"}
                               </div>
                               <div className="text-2xl font-black text-green-600 flex items-center relative z-10">
                                 <IndianRupee className="w-5 h-5" />
@@ -629,7 +707,7 @@ function App() {
 
                             <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
                               <div className="text-orange-800 text-xs font-bold uppercase mb-1 flex items-center gap-1">
-                                <PiggyBank className="w-3 h-3" /> Bank Loan / Self
+                                <PiggyBank className="w-3 h-3" /> {uiDict[currentLanguage]?.loan || "Bank Loan / Self"}
                               </div>
                               <div className="text-xl font-bold text-orange-600 flex items-center">
                                 <IndianRupee className="w-5 h-5 text-orange-400" />
@@ -650,7 +728,7 @@ function App() {
             <div className="flex flex-col items-center justify-center h-full py-4 animate-in fade-in">
               <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                 <MessageCircle className="text-green-500 w-7 h-7" />
-                2G/3G Voice Bot Integration
+                {t.waTitle}
               </h2>
               
               <div className="w-full max-w-[380px] h-[650px] bg-[#E5DDD5] rounded-[40px] border-[12px] border-slate-800 shadow-2xl relative overflow-hidden flex flex-col">
@@ -665,7 +743,7 @@ function App() {
                         <h3 className="font-bold text-sm">PM-AJAY Voice Bot</h3>
                         <BadgeCheck className="w-4 h-4 text-emerald-400" />
                       </div>
-                      <p className="text-xs text-emerald-100">online</p>
+                      <p className="text-xs text-emerald-100">{t.waOnline}</p>
                     </div>
                   </div>
                   <div className="flex gap-4">
@@ -691,7 +769,7 @@ function App() {
                         </div>
                         {msg.textSnippet && (
                           <div className="mt-2 text-[11px] text-slate-700 bg-white/50 p-2 rounded-md border border-slate-100">
-                            <i>"{msg.textSnippet}"</i>
+                            <i>"{msg.id === 1 ? t.waMockMsg : msg.textSnippet}"</i>
                           </div>
                         )}
                         <div className="text-[9px] text-right text-slate-400 mt-1 font-medium">10:42 AM</div>
@@ -712,7 +790,7 @@ function App() {
                 <div className="p-2 bg-slate-100 flex items-end gap-2 z-10 pb-6">
                   <div className="flex-1 bg-white rounded-full min-h-[44px] flex items-center px-4 gap-3 shadow-sm">
                     <Smile className="w-6 h-6 text-slate-400" />
-                    <input type="text" placeholder="Message" disabled className="flex-1 bg-transparent outline-none text-sm text-slate-800" />
+                    <input type="text" placeholder={t.waInput} disabled className="flex-1 bg-transparent outline-none text-sm text-slate-800" />
                     <Paperclip className="w-5 h-5 text-slate-400 -rotate-45" />
                     <Camera className="w-5 h-5 text-slate-400" />
                   </div>
@@ -732,24 +810,24 @@ function App() {
             <div>
               <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                 <BarChart3 className="text-orange-600" />
-                District Admin Dashboard
+                {t.adminTitle}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                  <div className="text-orange-800 font-medium mb-1">Total Beneficiaries</div>
+                  <div className="text-orange-800 font-medium mb-1">{t.adminTotalBen}</div>
                   <div className="text-3xl font-bold text-orange-600">12,450</div>
                 </div>
                 <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                  <div className="text-green-800 font-medium mb-1">Funds Disbursed</div>
+                  <div className="text-green-800 font-medium mb-1">{t.adminFunds}</div>
                   <div className="text-3xl font-bold text-green-600">₹4.2 Cr</div>
                 </div>
                 <div className="bg-slate-100 p-6 rounded-lg border border-slate-300">
-                  <div className="text-slate-700 font-medium mb-1">Pending Applications</div>
+                  <div className="text-slate-700 font-medium mb-1">{t.adminPending}</div>
                   <div className="text-3xl font-bold text-slate-800">842</div>
                 </div>
               </div>
               <div className="bg-slate-50 h-64 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400">
-                [ Adarsh Gram Yojana (AAP) Planning Chart Placeholder ]
+                {t.adminChartPlaceholder}
               </div>
             </div>
           )}
@@ -757,7 +835,7 @@ function App() {
       </main>
 
       <footer className="bg-slate-100 text-slate-500 text-center py-6 mt-auto text-sm border-t border-slate-200">
-        Designed for Pradhan Mantri Anusuchit Jaati Abhyuday Yojana (PM-AJAY) | Smart India Hackathon Prototype
+        {t.footerText}
       </footer>
     </div>
   );

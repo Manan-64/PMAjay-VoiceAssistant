@@ -4,20 +4,27 @@ export const speakWithVoice = (text, langCode = 'hi-IN', onComplete = null) => {
     return;
   }
 
-  // Exact names required by the ResponsiveVoice API
-  const rvVoiceMap = {
+  // Cancel any active audio
+  window.speechSynthesis.cancel();
+  if (window.responsiveVoice) {
+    try { window.responsiveVoice.cancel(); } catch(e) {}
+  }
+
+  const baseLang = langCode.split('-')[0].toLowerCase();
+
+  // 1. ResponsiveVoice handles these 4 languages perfectly
+  const rvMap = {
     'en-IN': 'UK English Female',
     'hi-IN': 'Hindi Female',
     'ta-IN': 'Tamil Male',
     'bn-IN': 'Bangla India Female'
   };
 
-  const rvVoice = rvVoiceMap[langCode];
+  const rvVoice = rvMap[langCode];
 
-  // Strategy A: If ResponsiveVoice supports the language, use it.
   if (rvVoice) {
+    console.log(`[TTS] Using ResponsiveVoice for ${langCode}`);
     const playRV = () => {
-      console.log(`[TTS] Using ResponsiveVoice: ${rvVoice}`);
       window.responsiveVoice.speak(text, rvVoice, {
         onend: () => { if (onComplete) onComplete(); },
         onerror: () => { if (onComplete) onComplete(); }
@@ -31,42 +38,49 @@ export const speakWithVoice = (text, langCode = 'hi-IN', onComplete = null) => {
         window.responsiveVoice.init();
         playRV();
       };
+      script.onerror = () => { if (onComplete) onComplete(); };
       document.head.appendChild(script);
     } else {
-      window.responsiveVoice.cancel();
       playRV();
     }
   } 
-  // Strategy B: Ghost Audio DOM Hack for MR, TE, GU
+  // 2. For Marathi (mr), Telugu (te), Gujarati (gu), route to Google GTX Cloud Audio
   else {
-    console.log(`[TTS] Using Ghost DOM Audio for: ${langCode}`);
-    const shortLang = langCode.split('-')[0];
-    // Google restricts URLs to ~200 characters, so we truncate safely
-    const safeText = text.length > 200 ? text.substring(0, 197) + '...' : text;
-    const gtxUrl = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=${shortLang}&q=${encodeURIComponent(safeText)}`;
+    console.log(`[TTS] Using Optimized Cloud GTX Audio for regional language: ${baseLang}`);
+    
+    // Keep text short to prevent server truncation
+    const safeText = text.length > 150 ? text.substring(0, 147) + '...' : text;
+    const url = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=${baseLang}&q=${encodeURIComponent(safeText)}`;
 
-    // Create a physical audio element in the DOM to bypass fetch CORS
     const audioEl = document.createElement('audio');
-    audioEl.setAttribute('referrerpolicy', 'no-referrer'); // CRITICAL: Hides localhost origin
-    audioEl.src = gtxUrl;
+    audioEl.setAttribute('referrerpolicy', 'no-referrer');
+    audioEl.src = url;
     audioEl.style.display = 'none';
     document.body.appendChild(audioEl);
 
-    audioEl.onended = () => {
-      audioEl.remove(); // Cleanup DOM
-      if (onComplete) onComplete();
+    let finished = false;
+    const done = () => {
+      if (!finished) {
+        finished = true;
+        audioEl.remove();
+        if (onComplete) onComplete();
+      }
     };
 
+    audioEl.onended = done;
     audioEl.onerror = (e) => {
-      console.error("[TTS Ghost] Failed to play audio:", e);
+      console.error("[TTS GTX Error] Failed to stream audio:", e);
       audioEl.remove();
       if (onComplete) onComplete();
     };
 
     audioEl.play().catch(err => {
-      console.error("[TTS Ghost] Autoplay blocked by browser:", err);
+      console.error("[TTS GTX] Autoplay blocked:", err);
       audioEl.remove();
       if (onComplete) onComplete();
     });
+
+    // Safety timeout in case audio fails to trigger onended
+    setTimeout(done, (text.length * 150) + 4000);
   }
 };
