@@ -366,23 +366,24 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-900 w-full">
-      <header className="bg-slate-900 text-white shadow-md border-b-4 border-orange-500">
+      <header className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={() => setActiveTab('home')}>
-            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border-2 border-green-600 p-1 flex-shrink-0">
-              <div className="text-[10px] text-slate-800 font-bold text-center leading-tight">Govt<br/>Emblem</div>
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
-                <span className="text-orange-500">PM-AJAY</span> Sahayata
-              </h1>
-              <p className="text-sm text-slate-300 font-medium">{t.appSubtitle}</p>
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('home')}>
+            {/* Official National Emblem of India */}
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
+              alt="National Emblem of India" 
+              className="h-10 md:h-12 w-auto object-contain"
+            />
+            <div className="text-left">
+              <h1 className="text-lg md:text-xl font-black text-slate-900 leading-tight">PM-AJAY Sahayata</h1>
+              <p className="text-xs md:text-sm text-gray-500 font-medium">Ministry of Social Justice and Empowerment</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-full border border-slate-600 focus-within:border-green-500 transition-colors shadow-inner">
-              <Globe className="w-4 h-4 text-green-500" />
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-full border border-gray-200 focus-within:border-green-500 transition-colors shadow-inner">
+              <Globe className="w-4 h-4 text-green-600" />
               <select 
                 value={currentLanguage}
                 onChange={(e) => {
@@ -393,10 +394,10 @@ function App() {
                     speakWithVoice(textToSpeak, e.target.value, () => setIsSpeaking(false));
                   }
                 }}
-                className="bg-transparent text-white outline-none font-medium text-sm cursor-pointer appearance-none min-w-[120px]"
+                className="bg-transparent text-slate-800 outline-none font-medium text-xs md:text-sm cursor-pointer appearance-none min-w-[100px]"
               >
                 {Object.entries(LANGUAGES).map(([code, config]) => (
-                  <option key={code} value={code} className="bg-slate-800 text-white">
+                  <option key={code} value={code} className="bg-white text-slate-800">
                     {config.name}
                   </option>
                 ))}
@@ -404,7 +405,7 @@ function App() {
             </div>
             <button 
               onClick={() => setActiveTab('admin')} 
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors"
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-full text-xs md:text-sm font-bold flex items-center gap-2 transition-colors shadow-sm"
             >
               <BadgeCheck className="w-4 h-4 text-orange-400" />
               District Admin Portal
