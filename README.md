@@ -1,9 +1,5 @@
 # Pmajay-VoiceAssistant 
-Here is the complete, professional `README.md` file formatted specifically for a Smart India Hackathon submission.
 
-Copy the code block below and paste it directly into the `README.md` file in your GitHub repository.
-
-```markdown
 # 🎙️ PM-AJAY Sahayata: AI Livelihood & NSQF Voice Assistant
 
 > **Smart India Hackathon Submission** 
