@@ -4,6 +4,7 @@ import { nsqfData } from './data/nsqfData';
 import { analyzeBeneficiarySituation } from './lib/aiMatcher';
 import { speakWithVoice } from './lib/ttsService';
 import { translations, audioTemplates } from './data/translations';
+import WhatsAppMode from './components/WhatsAppMode';
 import './App.css';
 
 const LANGUAGES = {
@@ -760,84 +761,8 @@ function App() {
           )}
 
           {activeTab === 'whatsapp' && (
-            <div className="flex flex-col items-center justify-center h-full py-4 animate-in fade-in">
-              <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <MessageCircle className="text-green-500 w-7 h-7" />
-                {t.waTitle}
-              </h2>
-              
-              <div className="w-full max-w-[380px] h-[650px] bg-[#E5DDD5] rounded-[40px] border-[12px] border-slate-800 shadow-2xl relative overflow-hidden flex flex-col">
-                
-                <div className="bg-[#075E54] text-white px-4 py-3 flex items-center justify-between z-10 shadow-md">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center p-1">
-                      <div className="text-[8px] text-[#075E54] font-bold leading-tight text-center">PM-AJAY<br/>BOT</div>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1">
-                        <h3 className="font-bold text-sm">PM-AJAY Voice Bot</h3>
-                        <BadgeCheck className="w-4 h-4 text-emerald-400" />
-                      </div>
-                      <p className="text-xs text-emerald-100">{t.waOnline}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <Phone className="w-5 h-5" />
-                    <MoreVertical className="w-5 h-5" />
-                  </div>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
-                  {whatsappMessages.map(msg => (
-                    <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2`}>
-                      <div className={`max-w-[85%] rounded-xl p-2 shadow-sm ${msg.sender === 'user' ? 'bg-[#DCF8C6] rounded-tr-sm' : 'bg-white rounded-tl-sm'}`}>
-                        <div className="flex items-center gap-3">
-                          <button className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 transition-colors flex items-center justify-center">
-                            <Play className="w-4 h-4 text-slate-600 ml-1" />
-                          </button>
-                          <div className="flex-1">
-                            <div className="h-1.5 w-24 bg-slate-200 rounded-full flex items-center overflow-hidden">
-                              <div className="w-1/3 h-full bg-slate-500 rounded-full"></div>
-                            </div>
-                          </div>
-                          <span className="text-xs text-slate-500 font-medium">{msg.duration}</span>
-                        </div>
-                        {msg.textSnippet && (
-                          <div className="mt-2 text-[11px] text-slate-700 bg-white/50 p-2 rounded-md border border-slate-100">
-                            <i>"{msg.id === 1 ? t.waMockMsg : msg.textSnippet}"</i>
-                          </div>
-                        )}
-                        <div className="text-[9px] text-right text-slate-400 mt-1 font-medium">10:42 AM</div>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {isWhatsappRecording && (
-                    <div className="flex justify-end animate-in fade-in">
-                       <div className="bg-[#DCF8C6] rounded-xl rounded-tr-sm p-3 shadow-sm text-sm text-slate-600 font-medium flex items-center gap-2">
-                         <Mic className="w-4 h-4 text-red-500 animate-pulse" />
-                         {uiText.wait}
-                       </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-2 bg-slate-100 flex items-end gap-2 z-10 pb-6">
-                  <div className="flex-1 bg-white rounded-full min-h-[44px] flex items-center px-4 gap-3 shadow-sm">
-                    <Smile className="w-6 h-6 text-slate-400" />
-                    <input type="text" placeholder={t.waInput} disabled className="flex-1 bg-transparent outline-none text-sm text-slate-800" />
-                    <Paperclip className="w-5 h-5 text-slate-400 -rotate-45" />
-                    <Camera className="w-5 h-5 text-slate-400" />
-                  </div>
-                  <button 
-                    onClick={handleWhatsappRecord}
-                    disabled={isWhatsappRecording}
-                    className={`w-[44px] h-[44px] rounded-full flex items-center justify-center text-white shadow-sm transition-all ${isWhatsappRecording ? 'bg-red-500 animate-pulse scale-110 ring-4 ring-red-200' : 'bg-[#128C7E] hover:bg-[#075E54]'}`}
-                  >
-                    {isWhatsappRecording ? <Square className="w-5 h-5 fill-current" /> : <Mic className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
+            <div className="animate-in fade-in">
+              <WhatsAppMode currentLanguage={currentLanguage} />
             </div>
           )}
 
