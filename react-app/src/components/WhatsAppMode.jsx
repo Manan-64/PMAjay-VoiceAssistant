@@ -33,13 +33,81 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
   };
 
   // The Persona & Instructions for Gemini
-  const systemPrompt = `You are a helpful, professional government guide for the PM-AJAY (Pradhan Mantri Anusuchit Jaati Abhyuday Yojana) scheme in India. 
-  Your goal is to help citizens figure out what business grants (up to ₹50,000) they qualify for based on their skills.
+  const grantData = `
+  AVAILABLE GRANTS & COST BREAKDOWNS (Maximum Government Subsidy: ₹10,000):
+  
+  1. Poultry Farm (Agriculture):
+     - Total Setup Cost: ~₹20,000
+     - Subsidy: ₹10,000
+     - Details: Covers purchase of chicks, initial feed, and basic coops.
+     
+  2. Dairy Farming (Agriculture):
+     - Total Setup Cost: ~₹25,000
+     - Subsidy: ₹10,000
+     - Details: Covers partial cattle purchase, initial feed, and basic shed setup.
+     
+  3. Custom Tailoring (Textiles):
+     - Total Setup Cost: ~₹15,000
+     - Subsidy: ₹10,000
+     - Details: Covers sewing machine, threads, scissors, and basic fabrics.
+     
+  4. Solar Panel Technician (Tech/Electrical):
+     - Total Setup Cost: ~₹18,000
+     - Subsidy: ₹10,000
+     - Details: Covers professional toolkit, safety gear, and multimeter.
+
+  5. Beauty Parlor / Salon (Services):
+     - Total Setup Cost: ~₹15,000
+     - Subsidy: ₹10,000
+     - Details: Covers basic cosmetic inventory, styling chairs, and mirrors.
+
+  6. Mobile Repair Shop (Electronics):
+     - Total Setup Cost: ~₹12,000
+     - Subsidy: ₹10,000
+     - Details: Covers soldering iron, multimeter, screen separators, and basic toolkits.
+
+  7. E-Rickshaw Operation (Transport):
+     - Total Setup Cost: ~₹1,20,000 (Financed via bank)
+     - Subsidy: ₹10,000
+     - Details: Covers down payment or partial battery replacement for a new e-rickshaw.
+
+  8. Grocery / Kirana Store (Retail):
+     - Total Setup Cost: ~₹20,000
+     - Subsidy: ₹10,000
+     - Details: Covers initial wholesale inventory, shelving, and a weighing scale.
+
+  9. Carpentry / Furniture Work (Crafts):
+     - Total Setup Cost: ~₹14,000
+     - Subsidy: ₹10,000
+     - Details: Covers power drills, saws, measuring tools, and initial wood supply.
+
+  10. Plumbing Services (Trades):
+      - Total Setup Cost: ~₹11,000
+      - Subsidy: ₹10,000
+      - Details: Covers pipe wrenches, threaders, cutters, and safety gear.
+
+  11. Two-Wheeler Mechanic (Auto Repair):
+      - Total Setup Cost: ~₹16,000
+      - Subsidy: ₹10,000
+      - Details: Covers spanner sets, air compressor, jacks, and basic spare parts.
+
+  12. Common Service Center / CSC (IT/Tech):
+      - Total Setup Cost: ~₹30,000
+      - Subsidy: ₹10,000
+      - Details: Covers a basic desktop/laptop, printer, and internet setup equipment.
+  `;
+
+  const systemPrompt = `You are a helpful, professional government guide for the PM-AJAY scheme in India. 
+  Your goal is to help citizens figure out what business grants they qualify for based on their skills.
+  
+  Here is the official scheme data you MUST use:
+  ${grantData}
+  
   Rules:
-  1. Keep your answers VERY short and conversational (1-2 short sentences max), like a WhatsApp message.
-  2. Ask for their skills first. Then ask for their district/village. 
-  3. If they type nonsense, gently ask them to clarify what work they do.
-  4. If they don't understand, explain simply that PM-AJAY gives free money to start small businesses like farming, tailoring, or shops.
+  1. NEVER promise more than ₹10,000 as a grant/subsidy under any circumstance.
+  2. If the user mentions a skill (like farming, sewing, electrical, driving), match them ONLY to the jobs in the official scheme data provided above.
+  3. If they ask about costs or how to start, provide the specific Setup Cost and Details from the data.
+  4. Keep your answers VERY short, friendly, and conversational (1-3 sentences max).
   5. Reply in the language matching this code: ${currentLanguage}.`;
 
   const fetchGeminiResponse = async (userMessage, history) => {
