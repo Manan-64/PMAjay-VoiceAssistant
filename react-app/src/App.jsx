@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { Mic, CheckSquare, MessageCircle, BarChart3, Globe, Square, Zap, Bot, ChevronRight, ChevronDown, Check, Volume2, Wallet, Building, PiggyBank, Briefcase, Scissors, Leaf, Laptop, IndianRupee, Phone, MoreVertical, Play, Smile, Paperclip, Camera, BadgeCheck } from 'lucide-react';
+import { Mic, CheckSquare, MessageCircle, BarChart3, Globe, Square, Zap, Bot, ChevronRight, ChevronDown, Check, Volume2, Wallet, Building, PiggyBank, Briefcase, Scissors, Leaf, Laptop, IndianRupee, Phone, MoreVertical, Play, Smile, Paperclip, Camera, BadgeCheck, X } from 'lucide-react';
 import { nsqfData } from './data/nsqfData';
 import { analyzeBeneficiarySituation } from './lib/aiMatcher';
 import { speakWithVoice } from './lib/ttsService';
@@ -130,8 +130,9 @@ const uiDict = {
 };
 
 function App() {
-  const [activeTab, setActiveTab] = useState('voice');
+  const [activeTab, setActiveTab] = useState('home');
   const [currentLanguage, setCurrentLanguage] = useState('hi-IN');
+  const [isWhatsappOpen, setIsWhatsappOpen] = useState(false);
 
   // --- Voice Assistant State ---
   const [hasStarted, setHasStarted] = useState(false);
@@ -158,13 +159,6 @@ function App() {
   const recognitionRef = useRef(null);
 
   const t = translations[currentLanguage] || translations['en-IN'];
-
-  const tabs = [
-    { id: 'voice', label: t.tabVoice },
-    { id: 'matches', label: t.tabGrants },
-    { id: 'whatsapp', label: t.tabWhatsapp },
-    { id: 'admin', label: t.tabAdmin },
-  ];
 
   // Auto-trigger TTS when navigating to a step (only when started)
   useEffect(() => {
@@ -374,7 +368,7 @@ function App() {
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-900 w-full">
       <header className="bg-slate-900 text-white shadow-md border-b-4 border-orange-500">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 cursor-pointer" onClick={() => setActiveTab('home')}>
             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border-2 border-green-600 p-1 flex-shrink-0">
               <div className="text-[10px] text-slate-800 font-bold text-center leading-tight">Govt<br/>Emblem</div>
             </div>
@@ -386,54 +380,77 @@ function App() {
             </div>
           </div>
           
-          <div className="flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-full border border-slate-600 focus-within:border-green-500 transition-colors shadow-inner">
-            <Globe className="w-4 h-4 text-green-500" />
-            <select 
-              value={currentLanguage}
-              onChange={(e) => {
-                setCurrentLanguage(e.target.value);
-                if (hasStarted && currentStep <= 4) {
-                  // If they change language mid-interview, repeat the question in the new language
-                  const textToSpeak = questions[e.target.value]?.[currentStep] || questions['en-IN'][currentStep];
-                  setIsSpeaking(true);
-                  speakWithVoice(textToSpeak, e.target.value, () => setIsSpeaking(false));
-                }
-              }}
-              className="bg-transparent text-white outline-none font-medium text-sm cursor-pointer appearance-none min-w-[120px]"
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-full border border-slate-600 focus-within:border-green-500 transition-colors shadow-inner">
+              <Globe className="w-4 h-4 text-green-500" />
+              <select 
+                value={currentLanguage}
+                onChange={(e) => {
+                  setCurrentLanguage(e.target.value);
+                  if (hasStarted && currentStep <= 4) {
+                    const textToSpeak = questions[e.target.value]?.[currentStep] || questions['en-IN'][currentStep];
+                    setIsSpeaking(true);
+                    speakWithVoice(textToSpeak, e.target.value, () => setIsSpeaking(false));
+                  }
+                }}
+                className="bg-transparent text-white outline-none font-medium text-sm cursor-pointer appearance-none min-w-[120px]"
+              >
+                {Object.entries(LANGUAGES).map(([code, config]) => (
+                  <option key={code} value={code} className="bg-slate-800 text-white">
+                    {config.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button 
+              onClick={() => setActiveTab('admin')} 
+              className="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors"
             >
-              {Object.entries(LANGUAGES).map(([code, config]) => (
-                <option key={code} value={code} className="bg-slate-800 text-white">
-                  {config.name}
-                </option>
-              ))}
-            </select>
+              <BadgeCheck className="w-4 h-4 text-orange-400" />
+              District Admin Portal
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="bg-white shadow-sm border-b border-gray-200 mb-6">
-        <div className="max-w-7xl mx-auto px-4 flex overflow-x-auto hide-scrollbar">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const activeClasses = "border-b-4 border-blue-600 text-blue-700 font-bold";
-            const inactiveClasses = "text-gray-500 hover:text-gray-800 border-b-4 border-transparent font-medium";
-            
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-6 whitespace-nowrap transition-colors flex items-center gap-2 ${isActive ? activeClasses : inactiveClasses}`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <main className="flex-1 max-w-7xl mx-auto px-4 w-full pb-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 w-full pb-8 pt-6">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8 min-h-[500px]">
           
+          {activeTab === 'home' && (
+            <div className="animate-in fade-in flex flex-col items-center justify-center space-y-8 mt-4 md:mt-12 mb-12">
+              <div className="text-center max-w-2xl mx-auto">
+                <h2 className="text-3xl md:text-4xl font-black text-slate-800 mb-4">Empowering Citizens through Skill-Based Grants</h2>
+                <p className="text-gray-600 text-lg">Select a module below to get started with PM-AJAY self-employment opportunities.</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mt-8">
+                <button 
+                  onClick={() => setActiveTab('voice')} 
+                  className="bg-white hover:border-green-500 hover:shadow-xl border-2 border-slate-100 shadow-md rounded-3xl p-8 flex flex-col items-center text-center transition-all group relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-green-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative z-10 w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                    <Mic className="w-10 h-10 text-green-600" />
+                  </div>
+                  <h3 className="relative z-10 text-2xl font-bold text-slate-800 mb-3">Voice Assistant</h3>
+                  <p className="relative z-10 text-gray-500 font-medium">Multilingual voice-guided scheme lookup</p>
+                </button>
+                
+                <button 
+                  onClick={() => setActiveTab('matches')} 
+                  className="bg-white hover:border-blue-500 hover:shadow-xl border-2 border-slate-100 shadow-md rounded-3xl p-8 flex flex-col items-center text-center transition-all group relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative z-10 w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                    <Briefcase className="w-10 h-10 text-blue-600" />
+                  </div>
+                  <h3 className="relative z-10 text-2xl font-bold text-slate-800 mb-3">Skill and Grant Matches</h3>
+                  <p className="relative z-10 text-gray-500 font-medium">Browse 12+ NSQF-aligned job roles and cost breakdowns</p>
+                </button>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'voice' && (
             <div className="flex flex-col h-full max-w-4xl mx-auto">
               <div className="bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg p-3 mb-8 w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-4">
@@ -760,13 +777,6 @@ function App() {
               )}
             </div>
           )}
-
-          {activeTab === 'whatsapp' && (
-            <div className="animate-in fade-in">
-              <WhatsAppMode currentLanguage={currentLanguage} />
-            </div>
-          )}
-
           {activeTab === 'admin' && (
             <div className="animate-in fade-in">
               <DistrictAdmin />
@@ -774,6 +784,33 @@ function App() {
           )}
         </div>
       </main>
+
+      {/* Floating WhatsApp Assistant Button */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        {isWhatsappOpen && (
+          <div className="mb-4 w-[350px] sm:w-[400px] bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 animate-in slide-in-from-bottom-10 flex flex-col">
+            <div className="bg-green-600 text-white p-3 flex justify-between items-center shadow-md z-10">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="w-5 h-5" />
+                <span className="font-bold">WhatsApp AI Guide</span>
+              </div>
+              <button onClick={() => setIsWhatsappOpen(false)} className="text-white hover:bg-green-700 p-1 rounded-full transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="relative">
+               <WhatsAppMode currentLanguage={currentLanguage} />
+            </div>
+          </div>
+        )}
+        <button 
+          onClick={() => setIsWhatsappOpen(!isWhatsappOpen)}
+          className="bg-green-500 hover:bg-green-600 text-white shadow-xl rounded-full px-5 py-4 flex items-center gap-3 transition-all hover:scale-105 font-bold text-lg border-2 border-white"
+        >
+          <MessageCircle className="w-6 h-6" />
+          <span className="hidden sm:inline">WhatsApp AI Guide</span>
+        </button>
+      </div>
 
       <footer className="bg-slate-100 text-slate-500 text-center py-6 mt-auto text-sm border-t border-slate-200">
         {t.footerText}
