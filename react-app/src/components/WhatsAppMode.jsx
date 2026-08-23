@@ -211,6 +211,16 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
     recognition.start();
   };
 
+  const formatText = (text) => {
+    if (!text) return "";
+    // Split the text by '**'
+    const parts = text.split('**');
+    // Every odd index is the text that was wrapped in **
+    return parts.map((part, index) => 
+      index % 2 === 1 ? <strong key={index} className="font-bold text-gray-900">{part}</strong> : part
+    );
+  };
+
   return (
     <div className="w-full h-[75vh] flex flex-col bg-slate-50 border border-gray-200 shadow-xl rounded-2xl overflow-hidden mt-4">
       {/* Web Chat Header */}
@@ -239,7 +249,7 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
                 : 'bg-white text-slate-800 rounded-tl-sm border border-gray-100'
             }`}>
               <div className="flex flex-col">
-                <p className="leading-relaxed">{msg.text}</p>
+                <p className="leading-relaxed">{formatText(msg.text)}</p>
                 {msg.sender === 'bot' && (
                   <button
                     onClick={() => playVoiceNote(msg.id, msg.text)}
