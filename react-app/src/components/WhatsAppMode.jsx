@@ -48,11 +48,21 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
     }
 
     try {
-      // Format history for Gemini API
-      const formattedHistory = history.map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.text }]
-      }));
+      // Clean history: Gemini requires the conversation to start with a 'user' role
+      const validHistory = [];
+      let foundFirstUser = false;
+
+      for (const msg of history) {
+        if (msg.sender === 'user') foundFirstUser = true;
+        if (foundFirstUser) {
+          validHistory.push({
+            role: msg.sender === 'user' ? 'user' : 'model',
+            parts: [{ text: msg.text }]
+          });
+        }
+      }
+
+      validHistory.push({ role: 'user', parts: [{ text: userMessage }] });
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -61,22 +71,27 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             system_instruction: { parts: [{ text: systemPrompt }] },
-            contents: [
-              ...formattedHistory,
-              { role: 'user', parts: [{ text: userMessage }] }
-            ]
+            contents: validHistory
           })
         }
       );
 
       const data = await response.json();
+      
+      // SHOW EXACT ERRORS IN THE CHAT
+      if (data.error) {
+        console.error("Google API Error:", data.error);
+        return `Google API Error: ${data.error.message}`;
+      }
+
       if (data.candidates && data.candidates.length > 0) {
         return data.candidates[0].content.parts[0].text;
       }
-      return "I am currently facing network issues. Please try again.";
+      
+      return "Error: Received empty response from Google AI.";
     } catch (error) {
-      console.error("Gemini API Error:", error);
-      return "There was an error connecting to the AI server.";
+      console.error("Fetch Error:", error);
+      return "Network Error: Could not reach Google's servers. Check your internet connection.";
     }
   };
 
