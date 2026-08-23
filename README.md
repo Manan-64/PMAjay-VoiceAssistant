@@ -106,12 +106,3 @@ This project is strictly designed around the **Ministry of Social Justice and Em
 * **[Teammate Name]** - Prompt Engineering, Data Architecture & Policy Research
 
 Made for the **Smart India Hackathon**.
-
-```
-
-<ElicitationsGroup message="What is the next deliverable you need help with?">
-  <Elicitation label="Draft the 3-minute live pitch & demo script" query="Write the complete 3-minute spoken pitch script and step-by-step demo flow for presenting this prototype to the SIH judges."/>
-  <Elicitation label="How to deploy this for free on Vercel" query="Give me step-by-step instructions on how to take this GitHub repository and deploy it for free on Vercel so we have a live link."/>
-</ElicitationsGroup>
-
-```
