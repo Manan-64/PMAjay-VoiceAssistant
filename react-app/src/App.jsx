@@ -408,7 +408,7 @@ function App() {
               className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-full text-xs md:text-sm font-bold flex items-center gap-2 transition-colors shadow-sm"
             >
               <BadgeCheck className="w-4 h-4 text-orange-400" />
-              District Admin Portal
+              {t.headerAdminBtn}
             </button>
           </div>
         </div>
@@ -420,8 +420,8 @@ function App() {
           {activeTab === 'home' && (
             <div className="animate-in fade-in flex flex-col items-center justify-center space-y-8 mt-4 md:mt-12 mb-12">
               <div className="text-center max-w-2xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-black text-slate-800 mb-4">Empowering Citizens through Skill-Based Grants</h2>
-                <p className="text-gray-600 text-lg">Select a module below to get started with PM-AJAY self-employment opportunities.</p>
+                <h2 className="text-3xl md:text-4xl font-black text-slate-800 mb-4">{t.homeHeroTitle}</h2>
+                <p className="text-gray-600 text-lg">{t.homeHeroSub}</p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mt-8">
@@ -433,8 +433,8 @@ function App() {
                   <div className="relative z-10 w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                     <Mic className="w-10 h-10 text-green-600" />
                   </div>
-                  <h3 className="relative z-10 text-2xl font-bold text-slate-800 mb-3">Voice Assistant</h3>
-                  <p className="relative z-10 text-gray-500 font-medium">Multilingual voice-guided scheme lookup</p>
+                  <h3 className="relative z-10 text-2xl font-bold text-slate-800 mb-3">{t.homeCard1Title}</h3>
+                  <p className="relative z-10 text-gray-500 font-medium">{t.homeCard1Desc}</p>
                 </button>
                 
                 <button 
@@ -445,8 +445,8 @@ function App() {
                   <div className="relative z-10 w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                     <Briefcase className="w-10 h-10 text-blue-600" />
                   </div>
-                  <h3 className="relative z-10 text-2xl font-bold text-slate-800 mb-3">Skill and Grant Matches</h3>
-                  <p className="relative z-10 text-gray-500 font-medium">Browse 12+ NSQF-aligned job roles and cost breakdowns</p>
+                  <h3 className="relative z-10 text-2xl font-bold text-slate-800 mb-3">{t.homeCard2Title}</h3>
+                  <p className="relative z-10 text-gray-500 font-medium">{t.homeCard2Desc}</p>
                 </button>
               </div>
             </div>
@@ -793,7 +793,7 @@ function App() {
             <div className="bg-green-600 text-white p-3 flex justify-between items-center shadow-md z-10">
               <div className="flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
-                <span className="font-bold">WhatsApp AI Guide</span>
+                <span className="font-bold">{t.homeFabWhatsapp}</span>
               </div>
               <button onClick={() => setIsWhatsappOpen(false)} className="text-white hover:bg-green-700 p-1 rounded-full transition-colors">
                 <X className="w-5 h-5" />
@@ -809,7 +809,7 @@ function App() {
           className="bg-green-500 hover:bg-green-600 text-white shadow-xl rounded-full px-5 py-4 flex items-center gap-3 transition-all hover:scale-105 font-bold text-lg border-2 border-white"
         >
           <MessageCircle className="w-6 h-6" />
-          <span className="hidden sm:inline">WhatsApp AI Guide</span>
+          <span className="hidden sm:inline">{t.homeFabWhatsapp}</span>
         </button>
       </div>
 

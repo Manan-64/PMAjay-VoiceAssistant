@@ -27,7 +27,15 @@ export const translations = {
     adminChartPlaceholder: "[ Adarsh Gram Yojana (AAP) Planning Chart Placeholder ]",
     viewBreakdown: "View Detailed Cost Breakdown",
     tableItem: "Item / Requirement",
-    tableCost: "Cost"
+    tableCost: "Cost",
+    homeHeroTitle: "Empowering Citizens through Skill-Based Grants",
+    homeHeroSub: "Select a module below to get started with PM-AJAY self-employment opportunities.",
+    homeCard1Title: "Voice Assistant",
+    homeCard1Desc: "Multilingual voice-guided scheme lookup",
+    homeCard2Title: "Skill and Grant Matches",
+    homeCard2Desc: "Browse 12+ NSQF-aligned job roles and cost breakdowns",
+    homeFabWhatsapp: "WhatsApp AI Guide",
+    headerAdminBtn: "District Admin Portal"
   },
   'hi-IN': {
     appSubtitle: "प्रधानमंत्री अनुसूचित जाति अभ्युदय योजना",
@@ -57,7 +65,15 @@ export const translations = {
     adminChartPlaceholder: "[ आदर्श ग्राम योजना (AAP) योजना चार्ट प्लेसहोल्डर ]",
     viewBreakdown: "विस्तृत लागत विवरण देखें",
     tableItem: "मद / आवश्यकता",
-    tableCost: "लागत"
+    tableCost: "लागत",
+    homeHeroTitle: "कौशल-आधारित अनुदानों के माध्यम से नागरिकों का सशक्तिकरण",
+    homeHeroSub: "पीएम-अजय स्वरोजगार अवसरों के साथ शुरुआत करने के लिए नीचे एक मॉड्यूल चुनें।",
+    homeCard1Title: "वॉयस असिस्टेंट",
+    homeCard1Desc: "बहुभाषी वॉयस-निर्देशित योजना खोज",
+    homeCard2Title: "कौशल और अनुदान मिलान",
+    homeCard2Desc: "12+ NSQF-संरेखित नौकरी भूमिकाएं और लागत विवरण ब्राउज़ करें",
+    homeFabWhatsapp: "व्हाट्सएप एआई गाइड",
+    headerAdminBtn: "जिला प्रशासन पोर्टल"
   },
   'mr-IN': {
     appSubtitle: "प्रधानमंत्री अनुसूचित जाती अभ्युदय योजना",
@@ -87,7 +103,15 @@ export const translations = {
     adminChartPlaceholder: "[ आदर्श ग्राम योजना (AAP) नियोजन चार्ट प्लेसहोल्डर ]",
     viewBreakdown: "सविस्तर खर्च विवरण पहा",
     tableItem: "वस्तू / आवश्यकता",
-    tableCost: "खर्च"
+    tableCost: "खर्च",
+    homeHeroTitle: "कौशल्य-आधारित अनुदानांद्वारे नागरिकांचे सक्षमीकरण",
+    homeHeroSub: "पीएम-अजय स्वयंरोजगार संधींसह प्रारंभ करण्यासाठी खालील मॉड्यूल निवडा.",
+    homeCard1Title: "व्हॉइस असिस्टंट",
+    homeCard1Desc: "बहुभाषिक व्हॉइस-मार्गदर्शित योजना शोध",
+    homeCard2Title: "कौशल्य आणि अनुदान जुळणी",
+    homeCard2Desc: "12+ NSQF-संरेखित नोकरी भूमिका आणि खर्चाचे विवरण ब्राउझ करा",
+    homeFabWhatsapp: "व्हॉट्सॲप एआय मार्गदर्शक",
+    headerAdminBtn: "जिल्हा प्रशासन पोर्टल"
   },
   'ta-IN': {
     appSubtitle: "பிரதான் மந்திரி அனுசூசித் ஜாதி அப்யுதய யோஜனா",
@@ -117,7 +141,15 @@ export const translations = {
     adminChartPlaceholder: "[ ஆதர்ஷ் கிராம் யோஜனா (AAP) திட்டமிடல் விளக்கப்படம் ]",
     viewBreakdown: "விரிவான செலவு முறிவைக் காண்க",
     tableItem: "பொருள் / தேவை",
-    tableCost: "செலவு"
+    tableCost: "செலவு",
+    homeHeroTitle: "திறன் அடிப்படையிலான மானியங்கள் மூலம் குடிமக்களுக்கு அதிகாரமளித்தல்",
+    homeHeroSub: "PM-AJAY சுய வேலைவாய்ப்பு வாய்ப்புகளுடன் தொடங்க கீழே உள்ள தொகுதியைத் தேர்ந்தெடுக்கவும்.",
+    homeCard1Title: "குரல் உதவியாளர்",
+    homeCard1Desc: "பன்மொழி குரல் வழிகாட்டும் திட்ட தேடல்",
+    homeCard2Title: "திறன் மற்றும் மானிய பொருத்தங்கள்",
+    homeCard2Desc: "12+ NSQF-இணைக்கப்பட்ட வேலை பாத்திரங்கள் மற்றும் செலவு முறிவுகளை உலாவுக",
+    homeFabWhatsapp: "வாட்ஸ்அப் AI வழிகாட்டி",
+    headerAdminBtn: "மாவட்ட நிர்வாக போர்டல்"
   },
   'bn-IN': {
     appSubtitle: "প্রধানমন্ত্রী অনূসূচিত জাতি অভ্যুদয় যোজনা",
@@ -147,7 +179,15 @@ export const translations = {
     adminChartPlaceholder: "[ আদর্শ গ্রাম যোজনা (AAP) পরিকল্পনা চার্ট প্লেসহোল্ডার ]",
     viewBreakdown: "বিস্তারিত খরচের বিবরণ দেখুন",
     tableItem: "আইটেম / প্রয়োজন",
-    tableCost: "খরচ"
+    tableCost: "খরচ",
+    homeHeroTitle: "দক্ষতা-ভিত্তিক অনুদানের মাধ্যমে নাগরিকদের ক্ষমতায়ন",
+    homeHeroSub: "PM-AJAY স্ব-কর্মসংস্থানের সুযোগ দিয়ে শুরু করতে নিচের একটি মডিউল নির্বাচন করুন।",
+    homeCard1Title: "ভয়েস অ্যাসিস্ট্যান্ট",
+    homeCard1Desc: "বহুভাষিক ভয়েস-নির্দেশিত স্কিম অনুসন্ধান",
+    homeCard2Title: "দক্ষতা এবং অনুদান ম্যাচ",
+    homeCard2Desc: "12+ NSQF-সারিবদ্ধ চাকরির ভূমিকা এবং খরচের বিবরণ ব্রাউজ করুন",
+    homeFabWhatsapp: "হোয়াটসঅ্যাপ এআই গাইড",
+    headerAdminBtn: "জেলা প্রশাসন পোর্টাল"
   },
   'te-IN': {
     appSubtitle: "ప్రధాన మంత్రి అనుసూచిత్ జాతి అభ్యుદય యోజన",
@@ -177,7 +217,15 @@ export const translations = {
     adminChartPlaceholder: "[ ఆదర్శ్ గ్రామ్ యోజన (AAP) ప్లానింగ్ చార్ట్ ప్లేస్‌హోల్డర్ ]",
     viewBreakdown: "వివరణాత్మక ఖర్చు వివరాలను చూడండి",
     tableItem: "అంశం / అవసరం",
-    tableCost: "ఖర్చు"
+    tableCost: "ఖర్చు",
+    homeHeroTitle: "నైపుణ్యాధారిత గ్రాంట్ల ద్వారా పౌరుల సాధికారత",
+    homeHeroSub: "PM-AJAY స్వయం ఉపాధి అవకాశాలతో ప్రారంభించడానికి దిగువ మాడ్యూల్‌ను ఎంచుకోండి.",
+    homeCard1Title: "వాయిస్ అసిస్టెంట్",
+    homeCard1Desc: "బహుభాషా వాయిస్-గైడెడ్ స్కీమ్ శోధన",
+    homeCard2Title: "నైపుణ్యం మరియు గ్రాంట్ మ్యాచెస్",
+    homeCard2Desc: "12+ NSQF-సమలేఖనం చేయబడిన ఉద్యోగ పాత్రలు మరియు ఖర్చుల వివరాలను బ్రౌజ్ చేయండి",
+    homeFabWhatsapp: "వాట్సాప్ AI గైడ్",
+    headerAdminBtn: "జిల్లా అడ్మిన్ పోర్టల్"
   },
   'gu-IN': {
     appSubtitle: "પ્રધાન મંત્રી અનુસૂચિત જાતિ અભ્યુદય યોજના",
@@ -207,7 +255,15 @@ export const translations = {
     adminChartPlaceholder: "[ આદર્શ ગ્રામ યોજના (AAP) આયોજન ચાર્ટ પ્લેસહોલ્ડર ]",
     viewBreakdown: "વિગતવાર ખર્ચનું વિભાજન જુઓ",
     tableItem: "વસ્તુ / જરૂરિયાત",
-    tableCost: "ખર્ચ"
+    tableCost: "ખર્ચ",
+    homeHeroTitle: "કૌશલ્ય આધારિત અનુદાન દ્વારા નાગરિકોનું સશક્તિકરણ",
+    homeHeroSub: "PM-AJAY સ્વ-રોજગારની તકો સાથે શરૂઆત કરવા માટે નીચે મોડ્યુલ પસંદ કરો.",
+    homeCard1Title: "વૉઇસ આસિસ્ટન્ટ",
+    homeCard1Desc: "બહુભાષી વૉઇસ-માર્ગદર્શિત યોજના શોધ",
+    homeCard2Title: "કૌશલ્ય અને અનુદાન મેળ",
+    homeCard2Desc: "12+ NSQF-સંરેખિત નોકરીની ભૂમિકાઓ અને ખર્ચનું વિભાજન બ્રાઉઝ કરો",
+    homeFabWhatsapp: "વૉટ્સએપ AI માર્ગદર્શિકા",
+    headerAdminBtn: "જિલ્લા વહીવટ પોર્ટલ"
   }
 };
 
