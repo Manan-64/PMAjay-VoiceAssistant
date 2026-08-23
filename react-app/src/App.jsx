@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { Mic, CheckSquare, MessageCircle, BarChart3, Globe, Square, Zap, Bot, ChevronRight, Check, Volume2, Wallet, Building, PiggyBank, Briefcase, Scissors, Leaf, Laptop, IndianRupee, Phone, MoreVertical, Play, Smile, Paperclip, Camera, BadgeCheck } from 'lucide-react';
+import { Mic, CheckSquare, MessageCircle, BarChart3, Globe, Square, Zap, Bot, ChevronRight, ChevronDown, Check, Volume2, Wallet, Building, PiggyBank, Briefcase, Scissors, Leaf, Laptop, IndianRupee, Phone, MoreVertical, Play, Smile, Paperclip, Camera, BadgeCheck } from 'lucide-react';
 import { nsqfData } from './data/nsqfData';
 import { analyzeBeneficiarySituation } from './lib/aiMatcher';
 import { speakWithVoice } from './lib/ttsService';
@@ -8,12 +8,12 @@ import './App.css';
 
 const LANGUAGES = {
   'en-IN': { name: 'English', loading: 'AI is analyzing beneficiary context...', aiTitle: 'AI Recommended Matches', wait: 'Recording audio...' },
-  'hi-IN': { name: 'Hindi (हिंदी)', loading: 'एआई लाभार्थी के संदर्भ का विश्लेषण कर रहा है...', aiTitle: 'AI अनुशंसित NSQF मिलान', wait: 'ऑडियो रिकॉर्ड हो रहा है...' },
-  'mr-IN': { name: 'Marathi (मराठी)', loading: 'AI लाभार्थ्यांच्या संदर्भाचे विश्लेषण करत आहे...', aiTitle: 'AI शिफारस केलेले सामने', wait: 'ऑडिओ रेकॉर्ड करत आहे...' },
-  'ta-IN': { name: 'Tamil (தமிழ்)', loading: 'AI பயனாளியின் சூழலை பகுப்பாய்வு செய்கிறது...', aiTitle: 'AI பரிந்துரைக்கப்பட்ட போட்டிகள்', wait: 'ஆடியோ பதிவு செய்யப்படுகிறது...' },
-  'bn-IN': { name: 'Bengali (বাংলা)', loading: 'এআই সুবিধাভোগীর প্রেক্ষাপট বিশ্লেষণ করছে...', aiTitle: 'AI প্রস্তাবিত মিলগুলি', wait: 'অডিও রেকর্ড করা হচ্ছে...' },
-  'te-IN': { name: 'Telugu (తెలుగు)', loading: 'AI లబ్ధిదారుని సందర్భాన్ని విశ్లేషిస్తోంది...', aiTitle: 'AI సిఫార్సు చేసిన సరిపోలికలు', wait: 'ఆడియో రికార్డ్ చేయబడుతోంది...' },
-  'gu-IN': { name: 'Gujarati (ગુજરાતી)', loading: 'AI લાભાર્થીના સંદર્ભનું વિશ્લેષણ કરી રહ્યું છે...', aiTitle: 'AI ભલામણ કરેલ મેચ', wait: 'ઑડિઓ રેકોર્ડ થઈ રહ્યો છે...' }
+  'hi-IN': { name: 'हिन्दी (Hindi)', loading: 'एआई लाभार्थी के संदर्भ का विश्लेषण कर रहा है...', aiTitle: 'AI अनुशंसित NSQF मिलान', wait: 'ऑडियो रिकॉर्ड हो रहा है...' },
+  'mr-IN': { name: 'मराठी (Marathi)', loading: 'AI लाभार्थ्यांच्या संदर्भाचे विश्लेषण करत आहे...', aiTitle: 'AI शिफारस केलेले सामने', wait: 'ऑडिओ रेकॉर्ड करत आहे...' },
+  'ta-IN': { name: 'தமிழ் (Tamil)', loading: 'AI பயனாளியின் சூழலை பகுப்பாய்வு செய்கிறது...', aiTitle: 'AI பரிந்துரைக்கப்பட்ட போட்டிகள்', wait: 'ஆடியோ பதிவு செய்யப்படுகிறது...' },
+  'bn-IN': { name: 'বাংলা (Bengali)', loading: 'এআই সুবিধাভোগীর প্রেক্ষাপট বিশ্লেষণ করছে...', aiTitle: 'AI প্রস্তাবিত মিলগুলি', wait: 'অডিও রেকর্ড করা হচ্ছে...' },
+  'te-IN': { name: 'తెలుగు (Telugu)', loading: 'AI లబ్ధిదారుని సందర్భాన్ని విశ్లేషిస్తోంది...', aiTitle: 'AI సిఫార్సు చేసిన సరిపోలికలు', wait: 'ఆడియో రికార్డ్ చేయబడుతోంది...' },
+  'gu-IN': { name: 'ગુજરાતી (Gujarati)', loading: 'AI લાભાર્થીના સંદર્ભનું વિશ્લેષણ કરી રહ્યું છે...', aiTitle: 'AI ભલામણ કરેલ મેચ', wait: 'ઑડિઓ રેકોર્ડ થઈ રહ્યો છે...' }
 };
 
 const questions = {
@@ -150,6 +150,8 @@ function App() {
     { id: 1, sender: 'ai', type: 'audio', duration: '0:05', textSnippet: 'नमस्ते! मैं PM-AJAY वॉयस बॉट हूँ। अपना नाम और काम बताएँ।' }
   ]);
   const [isWhatsappRecording, setIsWhatsappRecording] = useState(false);
+
+  const [expandedCard, setExpandedCard] = useState(null);
 
   const recognitionRef = useRef(null);
 
@@ -714,6 +716,39 @@ function App() {
                                 {trade.selfContribution.toLocaleString('en-IN')}
                               </div>
                             </div>
+                          </div>
+
+                          <div className="mt-4">
+                            <button
+                              onClick={() => setExpandedCard(expandedCard === trade.id ? null : trade.id)}
+                              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors w-full justify-center md:justify-start"
+                            >
+                              {translations[currentLanguage]?.viewBreakdown || "View Detailed Cost Breakdown"}
+                              <ChevronDown className={`w-4 h-4 transition-transform ${expandedCard === trade.id ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            {expandedCard === trade.id && trade.costBreakdown && (
+                              <div className="mt-3 bg-white border border-slate-200 rounded-lg overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200">
+                                <table className="w-full text-sm text-left">
+                                  <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                                    <tr>
+                                      <th className="px-4 py-2 border-r border-slate-100">{translations[currentLanguage]?.tableItem || "Item / Requirement"}</th>
+                                      <th className="px-4 py-2 text-right">{translations[currentLanguage]?.tableCost || "Cost"}</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-slate-100">
+                                    {trade.costBreakdown.map((item, idx) => (
+                                      <tr key={idx} className="hover:bg-slate-50">
+                                        <td className="px-4 py-2 text-slate-700 border-r border-slate-100">
+                                          {item.item[currentLanguage] || item.item['en-IN'] || item.item}
+                                        </td>
+                                        <td className="px-4 py-2 text-right font-medium text-slate-900">{item.cost}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

@@ -24,7 +24,10 @@ export const translations = {
     adminTotalBen: "Total Beneficiaries",
     adminFunds: "Funds Disbursed",
     adminPending: "Pending Applications",
-    adminChartPlaceholder: "[ Adarsh Gram Yojana (AAP) Planning Chart Placeholder ]"
+    adminChartPlaceholder: "[ Adarsh Gram Yojana (AAP) Planning Chart Placeholder ]",
+    viewBreakdown: "View Detailed Cost Breakdown",
+    tableItem: "Item / Requirement",
+    tableCost: "Cost"
   },
   'hi-IN': {
     appSubtitle: "प्रधानमंत्री अनुसूचित जाति अभ्युदय योजना",
@@ -51,7 +54,10 @@ export const translations = {
     adminTotalBen: "कुल लाभार्थी",
     adminFunds: "वितरित निधि (फंड)",
     adminPending: "लंबित आवेदन",
-    adminChartPlaceholder: "[ आदर्श ग्राम योजना (AAP) योजना चार्ट प्लेसहोल्डर ]"
+    adminChartPlaceholder: "[ आदर्श ग्राम योजना (AAP) योजना चार्ट प्लेसहोल्डर ]",
+    viewBreakdown: "विस्तृत लागत विवरण देखें",
+    tableItem: "मद / आवश्यकता",
+    tableCost: "लागत"
   },
   'mr-IN': {
     appSubtitle: "प्रधानमंत्री अनुसूचित जाती अभ्युदय योजना",
@@ -78,7 +84,10 @@ export const translations = {
     adminTotalBen: "एकूण लाभार्थी",
     adminFunds: "वितरित केलेला निधी",
     adminPending: "प्रलंबित अर्ज",
-    adminChartPlaceholder: "[ आदर्श ग्राम योजना (AAP) नियोजन चार्ट प्लेसहोल्डर ]"
+    adminChartPlaceholder: "[ आदर्श ग्राम योजना (AAP) नियोजन चार्ट प्लेसहोल्डर ]",
+    viewBreakdown: "सविस्तर खर्च विवरण पहा",
+    tableItem: "वस्तू / आवश्यकता",
+    tableCost: "खर्च"
   },
   'ta-IN': {
     appSubtitle: "பிரதான் மந்திரி அனுசூசித் ஜாதி அப்யுதய யோஜனா",
@@ -105,7 +114,10 @@ export const translations = {
     adminTotalBen: "மொத்த பயனாளிகள்",
     adminFunds: "வழங்கப்பட்ட நிதி",
     adminPending: "நிலுவையில் உள்ள விண்ணப்பங்கள்",
-    adminChartPlaceholder: "[ ஆதர்ஷ் கிராம் யோஜனா (AAP) திட்டமிடல் விளக்கப்படம் ]"
+    adminChartPlaceholder: "[ ஆதர்ஷ் கிராம் யோஜனா (AAP) திட்டமிடல் விளக்கப்படம் ]",
+    viewBreakdown: "விரிவான செலவு முறிவைக் காண்க",
+    tableItem: "பொருள் / தேவை",
+    tableCost: "செலவு"
   },
   'bn-IN': {
     appSubtitle: "প্রধানমন্ত্রী অনূসূচিত জাতি অভ্যুদয় যোজনা",
@@ -132,7 +144,10 @@ export const translations = {
     adminTotalBen: "মোট সুবিধাভোগী",
     adminFunds: "বিতরণকৃত তহবিল",
     adminPending: "মুলতবি আবেদন",
-    adminChartPlaceholder: "[ আদর্শ গ্রাম যোজনা (AAP) পরিকল্পনা চার্ট প্লেসহোল্ডার ]"
+    adminChartPlaceholder: "[ আদর্শ গ্রাম যোজনা (AAP) পরিকল্পনা চার্ট প্লেসহোল্ডার ]",
+    viewBreakdown: "বিস্তারিত খরচের বিবরণ দেখুন",
+    tableItem: "আইটেম / প্রয়োজন",
+    tableCost: "খরচ"
   },
   'te-IN': {
     appSubtitle: "ప్రధాన మంత్రి అనుసూచిత్ జాతి అభ్యుદય యోజన",
@@ -159,7 +174,10 @@ export const translations = {
     adminTotalBen: "మొత్తం లబ్ధిదారులు",
     adminFunds: "పంపిణీ చేసిన నిధులు",
     adminPending: "పెండింగ్ అప్లికేషన్లు",
-    adminChartPlaceholder: "[ ఆదర్శ్ గ్రామ్ యోజన (AAP) ప్లానింగ్ చార్ట్ ప్లేస్‌హోల్డర్ ]"
+    adminChartPlaceholder: "[ ఆదర్శ్ గ్రామ్ యోజన (AAP) ప్లానింగ్ చార్ట్ ప్లేస్‌హోల్డర్ ]",
+    viewBreakdown: "వివరణాత్మక ఖర్చు వివరాలను చూడండి",
+    tableItem: "అంశం / అవసరం",
+    tableCost: "ఖర్చు"
   },
   'gu-IN': {
     appSubtitle: "પ્રધાન મંત્રી અનુસૂચિત જાતિ અભ્યુદય યોજના",
@@ -186,7 +204,10 @@ export const translations = {
     adminTotalBen: "કુલ લાભાર્થીઓ",
     adminFunds: "વિતરિત ભંડોળ",
     adminPending: "બાકી અરજીઓ",
-    adminChartPlaceholder: "[ આદર્શ ગ્રામ યોજના (AAP) આયોજન ચાર્ટ પ્લેસહોલ્ડર ]"
+    adminChartPlaceholder: "[ આદર્શ ગ્રામ યોજના (AAP) આયોજન ચાર્ટ પ્લેસહોલ્ડર ]",
+    viewBreakdown: "વિગતવાર ખર્ચનું વિભાજન જુઓ",
+    tableItem: "વસ્તુ / જરૂરિયાત",
+    tableCost: "ખર્ચ"
   }
 };
 
