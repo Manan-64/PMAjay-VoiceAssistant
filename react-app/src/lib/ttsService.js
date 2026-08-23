@@ -31,17 +31,11 @@ export const speakWithVoice = (text, langCode = 'hi-IN', onComplete = null) => {
       });
     };
 
-    if (!window.responsiveVoice) {
-      const script = document.createElement('script');
-      script.src = "https://code.responsivevoice.org/responsivevoice.js";
-      script.onload = () => {
-        window.responsiveVoice.init();
-        playRV();
-      };
-      script.onerror = () => { if (onComplete) onComplete(); };
-      document.head.appendChild(script);
-    } else {
+    if (window.responsiveVoice) {
       playRV();
+    } else {
+      console.warn("[TTS] ResponsiveVoice SDK not found.");
+      if (onComplete) onComplete();
     }
   } 
   // 2. For Marathi (mr), Telugu (te), Gujarati (gu), route to Google GTX Cloud Audio
