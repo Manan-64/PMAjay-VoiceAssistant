@@ -106,10 +106,11 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
   Rules:
   1. NEVER promise more than ₹10,000 as a grant/subsidy under any circumstance.
   2. MATCHING: If the user mentions a skill, match them ONLY to the jobs in the official scheme data provided above.
-  3. PROACTIVE OFFER: When you suggest a matching job, ALWAYS end your message by asking if they would like an explanation of the setup costs and job details. (e.g., "Would you like to know the setup costs and what equipment this covers?").
-  4. EXPLAINING: If the user says "yes" or asks for details, explain the specific Total Setup Cost, the ₹10,000 Subsidy limit, and the exact Details from the data in simple terms.
-  5. Keep your answers VERY short, friendly, and conversational (1-3 sentences max).
-  6. Reply in the language matching this code: ${currentLanguage}.`;
+  3. EXPLAINING: If they ask for details, explain the Total Setup Cost, the ₹10,000 Subsidy limit, and the exact Details from the data.
+  4. THE CHOICE: After explaining a job or suggesting one, ALWAYS ask if they want to hear alternative options OR if they want to continue with this option. (e.g., "Would you like to hear about other options, or do you want to continue with this one?").
+  5. APPLYING: If the user agrees to continue with an option or says they want to apply, congratulate them and provide the official registration link: https://pmajay.dosje.gov.in/
+  6. Keep your answers VERY short, friendly, and conversational (1-4 sentences max).
+  7. Reply in the language matching this code: ${currentLanguage}.`;
 
   const fetchGeminiResponse = async (userMessage, history) => {
     if (!GEMINI_API_KEY) {
