@@ -789,20 +789,7 @@ function App() {
       {/* Floating WhatsApp Assistant Button */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
         {isWhatsappOpen && (
-          <div className="mb-4 w-[350px] sm:w-[400px] bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 animate-in slide-in-from-bottom-10 flex flex-col">
-            <div className="bg-green-600 text-white p-3 flex justify-between items-center shadow-md z-10">
-              <div className="flex items-center gap-2">
-                <MessageCircle className="w-5 h-5" />
-                <span className="font-bold">{t.homeFabWhatsapp}</span>
-              </div>
-              <button onClick={() => setIsWhatsappOpen(false)} className="text-white hover:bg-green-700 p-1 rounded-full transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="relative">
-               <WhatsAppMode currentLanguage={currentLanguage} />
-            </div>
-          </div>
+           <WhatsAppMode currentLanguage={currentLanguage} onClose={() => setIsWhatsappOpen(false)} />
         )}
         <button 
           onClick={() => setIsWhatsappOpen(!isWhatsappOpen)}

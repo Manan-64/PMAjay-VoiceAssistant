@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { speakWithVoice } from '../lib/ttsService';
 
-export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
+export default function WhatsAppMode({ currentLanguage = 'hi-IN', onClose }) {
   const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
   // Initial AI greeting
@@ -345,86 +345,94 @@ export default function WhatsAppMode({ currentLanguage = 'hi-IN' }) {
   };
 
   return (
-    <div className="w-full h-[75vh] flex flex-col bg-slate-50 border border-gray-200 shadow-xl rounded-2xl overflow-hidden mt-4">
-      {/* Web Chat Header */}
-      <div className="bg-slate-900 text-white p-4 flex items-center justify-between shadow-md z-10">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center font-bold text-2xl shadow-inner">
-            🤖
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-0 md:p-6 lg:p-12 animate-in fade-in duration-300">
+      <div className="w-full max-w-6xl h-full bg-[#EFEAE2] rounded-none md:rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-gray-300 relative animate-in slide-in-from-bottom-10">
+        
+        {/* Web Chat Header */}
+        <div className="w-full bg-[#00A884] text-white flex justify-between items-center px-4 py-3 shadow-md z-10">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-full bg-white text-green-600 flex items-center justify-center font-bold text-2xl shadow-inner">
+              🤖
+            </div>
+            <div>
+              <h2 className="font-bold text-lg">WhatsApp AI Guide</h2>
+              <p className="text-sm text-green-100 flex items-center">
+                <span className="w-2 h-2 bg-green-200 rounded-full mr-2 animate-pulse"></span>
+                Live AI connected
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="font-bold text-lg">PM-AJAY Sahayata AI Guide</h2>
-            <p className="text-sm text-green-400 flex items-center">
-              <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-              Live AI connected
-            </p>
-          </div>
+          {onClose && (
+            <button onClick={onClose} className="text-white hover:bg-green-700 p-2 rounded-full transition-colors">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          )}
         </div>
-      </div>
 
-      {/* Chat Messages Body */}
-      <div className="flex-1 bg-[#f0f2f5] p-6 overflow-y-auto flex flex-col space-y-6">
-        {messages.map((msg) => (
-          <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[70%] p-4 rounded-2xl shadow-sm text-base relative ${
-              msg.sender === 'user'
-                ? 'bg-blue-600 text-white rounded-tr-sm'
-                : 'bg-white text-slate-800 rounded-tl-sm border border-gray-100'
-            }`}>
-              <div className="flex flex-col">
-                <p className="leading-relaxed">{formatText(msg.text)}</p>
-                {msg.sender === 'bot' && (
-                  <button
-                    onClick={() => playVoiceNote(msg.id, msg.text)}
-                    className={`mt-3 self-start flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
-                      activeAudioId === msg.id ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-                    }`}
-                  >
-                    <span>{activeAudioId === msg.id ? '⏹️ Playing Audio...' : '▶ Play Aloud'}</span>
-                  </button>
-                )}
+        {/* Chat Messages Body */}
+        <div className="flex-grow overflow-y-auto p-4 md:p-8 flex flex-col space-y-6">
+          {messages.map((msg) => (
+            <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] md:max-w-[70%] p-4 rounded-2xl shadow-sm text-base relative ${
+                msg.sender === 'user'
+                  ? 'bg-[#d9fdd3] text-slate-800 rounded-tr-sm'
+                  : 'bg-white text-slate-800 rounded-tl-sm border border-gray-100'
+              }`}>
+                <div className="flex flex-col">
+                  <p className="leading-relaxed whitespace-pre-wrap">{formatText(msg.text)}</p>
+                  {msg.sender === 'bot' && (
+                    <button
+                      onClick={() => playVoiceNote(msg.id, msg.text)}
+                      className={`mt-3 self-start flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                        activeAudioId === msg.id ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-green-50 text-green-700 hover:bg-green-100'
+                      }`}
+                    >
+                      <span>{activeAudioId === msg.id ? '⏹️ Playing Audio...' : '▶ Play Aloud'}</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="flex justify-start">
-            <div className="bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm flex space-x-2 items-center">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></div>
+          ))}
+          {isTyping && (
+            <div className="flex justify-start">
+              <div className="bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm flex space-x-2 items-center">
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></div>
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></div>
+              </div>
             </div>
-          </div>
-        )}
-        <div ref={chatEndRef} />
-      </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
 
-      {/* Web Chat Input Footer */}
-      <form onSubmit={handleSendMessage} className="bg-white p-4 border-t border-gray-200 flex items-center space-x-4">
-        <button
-          type="button"
-          onClick={handleMicClick}
-          className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl transition-all shadow-md ${
-            isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          }`}
-          title="Speak to AI"
-        >
-          🎙️
-        </button>
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          placeholder="Type your message to the AI Guide..."
-          className="flex-1 bg-gray-100 text-slate-800 px-6 py-4 rounded-full text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all border border-transparent"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-md transition-all"
-        >
-          ➤
-        </button>
-      </form>
+        {/* Web Chat Input Footer */}
+        <form onSubmit={handleSendMessage} className="w-full bg-[#F0F2F5] p-4 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleMicClick}
+            className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl transition-all shadow-sm ${
+              isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-300'
+            }`}
+            title="Speak to AI"
+          >
+            🎙️
+          </button>
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Type your message to the AI Guide..."
+            className="flex-1 bg-white text-slate-800 px-6 py-4 rounded-full text-base focus:outline-none focus:ring-2 focus:ring-[#00A884] transition-all border border-gray-300"
+          />
+          <button
+            type="submit"
+            className="bg-[#00A884] hover:bg-[#008f6f] text-white w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-md transition-all"
+          >
+            ➤
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
