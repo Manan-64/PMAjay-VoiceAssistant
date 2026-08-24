@@ -738,23 +738,24 @@ function App() {
                             </div>
                           </div>
 
-                          <div className="mt-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
-                            <button
-                              onClick={() => setExpandedCard(expandedCard === trade.id ? null : trade.id)}
-                              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors w-full sm:w-auto justify-center"
-                            >
-                              {translations[currentLanguage]?.viewBreakdown || "View Detailed Cost Breakdown"}
-                              <ChevronDown className={`w-4 h-4 transition-transform ${expandedCard === trade.id ? 'rotate-180' : ''}`} />
-                            </button>
-                            
-                            <button
-                              onClick={() => setSelectedDescriptionTrade(trade)}
-                              className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors w-full sm:w-auto justify-center bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 hover:bg-blue-100"
-                            >
-                              <Square className="w-4 h-4" /> 
-                              Read Full Description
-                            </button>
-                          </div>
+                          <div className="mt-4">
+                            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                              <button
+                                onClick={() => setExpandedCard(expandedCard === trade.id ? null : trade.id)}
+                                className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors w-full sm:w-auto justify-center"
+                              >
+                                {translations[currentLanguage]?.viewBreakdown || "View Detailed Cost Breakdown"}
+                                <ChevronDown className={`w-4 h-4 transition-transform ${expandedCard === trade.id ? 'rotate-180' : ''}`} />
+                              </button>
+                              
+                              <button
+                                onClick={() => setSelectedDescriptionTrade(trade)}
+                                className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors w-full sm:w-auto justify-center bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 hover:bg-blue-100"
+                              >
+                                <Square className="w-4 h-4" /> 
+                                Read Full Description
+                              </button>
+                            </div>
 
                             {expandedCard === trade.id && trade.costBreakdown && (
                               <div className="mt-3 bg-white border border-slate-200 rounded-lg overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200">
