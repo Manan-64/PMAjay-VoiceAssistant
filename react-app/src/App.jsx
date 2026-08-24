@@ -194,6 +194,7 @@ function App() {
   const [lastAnalyzedTranscript, setLastAnalyzedTranscript] = useState('');
   const [showExploreCategories, setShowExploreCategories] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const [selectedExtraJobs, setSelectedExtraJobs] = useState([]);
   
   // --- WhatsApp Mode State ---
   const [whatsappMessages, setWhatsappMessages] = useState([
@@ -688,11 +689,11 @@ function App() {
                   </div>
 
                   <div className="grid grid-cols-1 gap-6">
-                    {filteredNsqfData.length === 0 ? (
+                    {filteredNsqfData.length === 0 && selectedExtraJobs.length === 0 ? (
                        <div className="p-8 text-center text-slate-500 bg-slate-50 rounded-xl border border-slate-200">
                           No specific matches found. Try answering the interview again with more details.
                        </div>
-                    ) : filteredNsqfData.map((trade) => (
+                    ) : [...filteredNsqfData, ...selectedExtraJobs].map((trade) => (
                       <div key={trade.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all hover:border-green-500 group flex flex-col md:flex-row">
                         
                         <div className="p-6 md:w-5/12 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50">
@@ -877,13 +878,13 @@ function App() {
 
                     {showExploreCategories && (() => {
                       const JOB_CATEGORIES = [
-                        { id: 'electrical', icon: '⚡', label: 'Electrical & Green Energy', color: 'bg-yellow-50 border-yellow-200 text-yellow-800' },
-                        { id: 'agriculture', icon: '🌾', label: 'Agriculture & Animal Husbandry', color: 'bg-green-50 border-green-200 text-green-800' },
-                        { id: 'textiles', icon: '🧵', label: 'Textiles & Apparel', color: 'bg-pink-50 border-pink-200 text-pink-800' },
-                        { id: 'automotive', icon: '🔧', label: 'Automotive & Mechanical', color: 'bg-slate-50 border-slate-300 text-slate-800' },
-                        { id: 'construction', icon: '🏗️', label: 'Construction & Infrastructure', color: 'bg-orange-50 border-orange-200 text-orange-800' },
-                        { id: 'retail', icon: '🏪', label: 'Retail & Micro-Enterprise Services', color: 'bg-blue-50 border-blue-200 text-blue-800' },
-                        { id: 'food', icon: '🍽️', label: 'Food Processing & Hospitality', color: 'bg-red-50 border-red-200 text-red-800' },
+                        { id: 'electrical', icon: '⚡', label: 'Electrical & Green Energy', color: 'bg-yellow-50 border-yellow-200 text-yellow-800', sector: 'Electrical & Green Energy', domain: 'Green Energy' },
+                        { id: 'agriculture', icon: '🌾', label: 'Agriculture & Animal Husbandry', color: 'bg-green-50 border-green-200 text-green-800', sector: 'Agriculture', domain: 'Agricultural Practices' },
+                        { id: 'textiles', icon: '🧵', label: 'Textiles & Apparel', color: 'bg-pink-50 border-pink-200 text-pink-800', sector: 'Textiles & Apparel', domain: 'Textile & Handloom' },
+                        { id: 'automotive', icon: '🔧', label: 'Automotive & Mechanical', color: 'bg-slate-50 border-slate-300 text-slate-800', sector: 'Automotive & Mechanical', domain: 'Automotive Services' },
+                        { id: 'construction', icon: '🏗️', label: 'Construction & Infrastructure', color: 'bg-orange-50 border-orange-200 text-orange-800', sector: 'Construction', domain: 'Construction & Infra' },
+                        { id: 'retail', icon: '🏪', label: 'Retail & Micro-Enterprise Services', color: 'bg-blue-50 border-blue-200 text-blue-800', sector: 'Retail & Services', domain: 'Retail & Commerce' },
+                        { id: 'food', icon: '🍽️', label: 'Food Processing & Hospitality', color: 'bg-red-50 border-red-200 text-red-800', sector: 'Food & Hospitality', domain: 'Food Processing' },
                       ];
                       const JOB_LISTINGS = {
                         electrical: ['Assistant Electrician', 'PV Solar Installer', 'Home Appliance Mechanic', 'Mobile & Electronics Repair Technician'],
@@ -894,6 +895,38 @@ function App() {
                         retail: ['Kirana / Retail Store Operator', 'CSC (Common Service Centre) Operator', 'Salon / Beauty Therapist', 'Data Entry Assistant'],
                         food: ['Food Processing Technician (Pickles, Snacks, Packaging)', 'Assistant Cook / Chef', 'Baker'],
                       };
+
+                      const handleChipClick = (jobTitle, cat) => {
+                        const jobId = `EXTRA-${jobTitle.replace(/\s+/g, '-').toUpperCase()}`;
+                        setSelectedExtraJobs(prev => {
+                          if (prev.find(j => j.id === jobId)) return prev; // prevent duplicate
+                          const newJob = {
+                            id: jobId,
+                            title: jobTitle,
+                            localTitle: { 'en-IN': jobTitle, 'hi-IN': jobTitle, 'mr-IN': jobTitle, 'ta-IN': jobTitle, 'bn-IN': jobTitle, 'te-IN': jobTitle, 'gu-IN': jobTitle },
+                            sector: cat.sector,
+                            localSector: { 'en-IN': cat.sector, 'hi-IN': cat.sector, 'mr-IN': cat.sector, 'ta-IN': cat.sector, 'bn-IN': cat.sector, 'te-IN': cat.sector, 'gu-IN': cat.sector },
+                            nsqfLevel: 3,
+                            adarshGramDomain: cat.domain,
+                            totalSetupCost: 20000,
+                            subsidyAmount: 10000,
+                            selfContribution: 10000,
+                            costBreakdown: [
+                              { item: 'Tools & Starter Equipment', cost: '₹12,000' },
+                              { item: 'Training & Certification', cost: '₹4,000' },
+                              { item: 'Working Capital & Materials', cost: '₹4,000' },
+                            ],
+                            overview: `Set up a self-employment enterprise as a ${jobTitle} under the PM-AJAY GIA scheme.`,
+                            onboarding: '1. Complete NSQF-aligned skill training. 2. Source tools and equipment using the subsidy. 3. Register on the PM-AJAY portal.',
+                            dailyTasks: `Day-to-day operations as a ${jobTitle} — serving clients, managing materials, and tracking income.`,
+                            growth: 'Can scale by adding apprentices or expanding service area with reinvested profits.',
+                          };
+                          return [...prev, newJob];
+                        });
+                      };
+
+                      const selectedIds = new Set(selectedExtraJobs.map(j => j.id));
+
                       return (
                         <div className="mt-4 rounded-2xl border border-slate-200 overflow-hidden shadow-sm bg-white animate-in fade-in slide-in-from-top-2 duration-300">
                           {JOB_CATEGORIES.map((cat, idx) => (
@@ -911,15 +944,26 @@ function App() {
 
                               {expandedCategory === cat.id && (
                                 <div className="px-5 pb-5 pt-1 bg-slate-50 animate-in fade-in slide-in-from-top-1 duration-200">
+                                  <p className="text-xs text-slate-400 mb-3">Click a role to add it to your recommendation list ↑</p>
                                   <div className="flex flex-wrap gap-2">
-                                    {JOB_LISTINGS[cat.id].map((job) => (
-                                      <span
-                                        key={job}
-                                        className="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:border-slate-400 hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-full cursor-pointer transition-all shadow-sm"
-                                      >
-                                        <span>📌</span> {job}
-                                      </span>
-                                    ))}
+                                    {JOB_LISTINGS[cat.id].map((job) => {
+                                      const chipId = `EXTRA-${job.replace(/\s+/g, '-').toUpperCase()}`;
+                                      const isAdded = selectedIds.has(chipId);
+                                      return (
+                                        <button
+                                          key={job}
+                                          onClick={() => handleChipClick(job, cat)}
+                                          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border cursor-pointer transition-all shadow-sm ${
+                                            isAdded
+                                              ? 'bg-green-100 border-green-400 text-green-800 ring-1 ring-green-400'
+                                              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-400 hover:bg-slate-100'
+                                          }`}
+                                        >
+                                          {isAdded ? <Check className="w-3 h-3" /> : <span>📌</span>}
+                                          {job}
+                                        </button>
+                                      );
+                                    })}
                                   </div>
                                 </div>
                               )}
