@@ -192,6 +192,8 @@ function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [matchedTradeIds, setMatchedTradeIds] = useState(nsqfData.map(d => d.id));
   const [lastAnalyzedTranscript, setLastAnalyzedTranscript] = useState('');
+  const [showExploreCategories, setShowExploreCategories] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState(null);
   
   // --- WhatsApp Mode State ---
   const [whatsappMessages, setWhatsappMessages] = useState([
@@ -861,6 +863,71 @@ function App() {
                         </div>
                       </div>
                     ))}
+                  </div>
+
+                  {/* ── Explore More Job Categories ── */}
+                  <div className="mt-8">
+                    <button
+                      onClick={() => { setShowExploreCategories(v => !v); setExpandedCategory(null); }}
+                      className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-colors"
+                    >
+                      <span>{showExploreCategories ? '▲' : '▼'}</span>
+                      <span>Explore More Job Categories</span>
+                    </button>
+
+                    {showExploreCategories && (() => {
+                      const JOB_CATEGORIES = [
+                        { id: 'electrical', icon: '⚡', label: 'Electrical & Green Energy', color: 'bg-yellow-50 border-yellow-200 text-yellow-800' },
+                        { id: 'agriculture', icon: '🌾', label: 'Agriculture & Animal Husbandry', color: 'bg-green-50 border-green-200 text-green-800' },
+                        { id: 'textiles', icon: '🧵', label: 'Textiles & Apparel', color: 'bg-pink-50 border-pink-200 text-pink-800' },
+                        { id: 'automotive', icon: '🔧', label: 'Automotive & Mechanical', color: 'bg-slate-50 border-slate-300 text-slate-800' },
+                        { id: 'construction', icon: '🏗️', label: 'Construction & Infrastructure', color: 'bg-orange-50 border-orange-200 text-orange-800' },
+                        { id: 'retail', icon: '🏪', label: 'Retail & Micro-Enterprise Services', color: 'bg-blue-50 border-blue-200 text-blue-800' },
+                        { id: 'food', icon: '🍽️', label: 'Food Processing & Hospitality', color: 'bg-red-50 border-red-200 text-red-800' },
+                      ];
+                      const JOB_LISTINGS = {
+                        electrical: ['Assistant Electrician', 'PV Solar Installer', 'Home Appliance Mechanic', 'Mobile & Electronics Repair Technician'],
+                        agriculture: ['Dairy Farmer', 'Poultry Farmer', 'Organic Crop Cultivator', 'Mushroom Grower', 'Beekeeper / Apiculturist'],
+                        textiles: ['Custom Tailor', 'Sewing Machine Operator', 'Embroidery & Zardosi Artisan', 'Handloom Weaver'],
+                        automotive: ['Two-Wheeler / Auto Mechanic', 'E-Rickshaw Operator & Maintenance', 'Welder', 'Fitter'],
+                        construction: ['General Mason', 'Plumber', 'Carpenter', 'Painter & Decorator'],
+                        retail: ['Kirana / Retail Store Operator', 'CSC (Common Service Centre) Operator', 'Salon / Beauty Therapist', 'Data Entry Assistant'],
+                        food: ['Food Processing Technician (Pickles, Snacks, Packaging)', 'Assistant Cook / Chef', 'Baker'],
+                      };
+                      return (
+                        <div className="mt-4 rounded-2xl border border-slate-200 overflow-hidden shadow-sm bg-white animate-in fade-in slide-in-from-top-2 duration-300">
+                          {JOB_CATEGORIES.map((cat, idx) => (
+                            <div key={cat.id} className={idx < JOB_CATEGORIES.length - 1 ? 'border-b border-slate-100' : ''}>
+                              <button
+                                onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
+                                className={`w-full flex items-center justify-between px-5 py-4 text-left font-bold text-sm hover:bg-slate-50 transition-colors gap-3`}
+                              >
+                                <span className="flex items-center gap-3">
+                                  <span className={`text-base w-8 h-8 flex items-center justify-center rounded-lg border ${cat.color}`}>{cat.icon}</span>
+                                  <span className="text-slate-800">{cat.label}</span>
+                                </span>
+                                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 flex-shrink-0 ${expandedCategory === cat.id ? 'rotate-180' : ''}`} />
+                              </button>
+
+                              {expandedCategory === cat.id && (
+                                <div className="px-5 pb-5 pt-1 bg-slate-50 animate-in fade-in slide-in-from-top-1 duration-200">
+                                  <div className="flex flex-wrap gap-2">
+                                    {JOB_LISTINGS[cat.id].map((job) => (
+                                      <span
+                                        key={job}
+                                        className="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:border-slate-400 hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-full cursor-pointer transition-all shadow-sm"
+                                      >
+                                        <span>📌</span> {job}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </>
               )}
