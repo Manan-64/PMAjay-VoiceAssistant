@@ -37,10 +37,10 @@ export default function DistrictAdmin() {
   ];
 
   const sectorShare = [
-    { sector: 'Agriculture & Livestock (Poultry/Dairy)', percent: 38, count: '1,240 Grants', color: 'bg-emerald-500' },
-    { sector: 'Textiles & Apparel (Tailoring)', percent: 24, count: '780 Grants', color: 'bg-blue-500' },
-    { sector: 'Technical Trades (Solar, Mobile, Auto)', percent: 20, count: '650 Grants', color: 'bg-amber-500' },
-    { sector: 'Retail & Services (Kirana, Salon, CSC)', percent: 18, count: '590 Grants', color: 'bg-indigo-500' }
+    { sector: 'कृषि एवं पशुपालन (पोल्ट्री/डेयरी)', percent: 38, count: '1,240 अनुदान', color: 'bg-emerald-500' },
+    { sector: 'वस्त्र एवं परिधान (सिलाई)', percent: 24, count: '780 अनुदान', color: 'bg-blue-500' },
+    { sector: 'तकनीकी व्यवसाय (सोलर, मोबाइल, ऑटो)', percent: 20, count: '650 अनुदान', color: 'bg-amber-500' },
+    { sector: 'खुदरा एवं सेवाएं (किराना, सैलून, सीएससी)', percent: 18, count: '590 अनुदान', color: 'bg-indigo-500' }
   ];
 
   const handleStatusChange = (id, newStatus) => {
@@ -62,14 +62,14 @@ export default function DistrictAdmin() {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-6 rounded-2xl border border-gray-200 shadow-sm gap-4">
         <div>
           <div className="flex items-center space-x-3">
-            <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full uppercase tracking-wider">District Administration Node</span>
+            <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full uppercase tracking-wider">ज़िला प्रशासन नोड</span>
             <span className="flex items-center text-xs text-green-600 font-semibold">
               <span className="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span>
-              Live Portal Sync
+              लाइव पोर्टल सिंक
             </span>
           </div>
-          <h1 className="text-2xl font-black text-slate-900 mt-1">PM-AJAY Monitoring & Grant Disbursement Dashboard</h1>
-          <p className="text-sm text-gray-500">Pradhan Mantri Anusuchit Jaati Abhyuday Yojana • FY 2026–27</p>
+          <h1 className="text-2xl font-black text-slate-900 mt-1">पीएम-अजय (PM-AJAY) निगरानी एवं अनुदान वितरण डैशबोर्ड</h1>
+          <p className="text-sm text-gray-500">प्रधानमंत्री अनुसूचित जाति अभ्युदय योजना • वित्त वर्ष 2026–27</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -78,10 +78,10 @@ export default function DistrictAdmin() {
             onChange={(e) => setSelectedDistrict(e.target.value)}
             className="bg-gray-50 border border-gray-300 font-semibold text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500"
           >
-            <option value="Varanasi">District: Varanasi (UP)</option>
-            <option value="Lucknow">District: Lucknow (UP)</option>
-            <option value="Pune">District: Pune (MH)</option>
-            <option value="Patna">District: Patna (BR)</option>
+            <option value="Varanasi">ज़िला: वाराणसी (उ.प्र.)</option>
+            <option value="Lucknow">ज़िला: लखनऊ (उ.प्र.)</option>
+            <option value="Pune">ज़िला: पुणे (महा.)</option>
+            <option value="Patna">ज़िला: पटना (बिहार)</option>
           </select>
 
           <button
@@ -89,7 +89,7 @@ export default function DistrictAdmin() {
             className="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm px-4 py-2.5 rounded-xl shadow transition-all flex items-center space-x-2"
           >
             <span>📥</span>
-            <span>Export Report</span>
+            <span>रिपोर्ट निर्यात करें</span>
           </button>
         </div>
       </div>
@@ -97,27 +97,27 @@ export default function DistrictAdmin() {
       {/* KPI Cards Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Applications</p>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">कुल आवेदन</p>
           <h3 className="text-3xl font-black text-slate-900 mt-2">3,260</h3>
           <p className="text-xs text-green-600 font-semibold mt-2 flex items-center">
-            <span className="mr-1">▲ +14.8%</span> from last month
+            <span className="mr-1">▲ पिछले महीने से +14.8%</span>
           </p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Direct Subsidy Disbursed</p>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">प्रत्यक्ष सब्सिडी वितरित</p>
           <h3 className="text-3xl font-black text-blue-600 mt-2">₹2.03 Cr</h3>
-          <p className="text-xs text-gray-500 mt-2 font-medium">Cap: ₹10,000 / individual</p>
+          <p className="text-xs text-gray-500 mt-2 font-medium">अधिकतम सीमा: ₹10,000 / प्रति व्यक्ति</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Pending Field Reviews</p>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">लंबित फ़ील्ड समीक्षाएं</p>
           <h3 className="text-3xl font-black text-amber-500 mt-2">148</h3>
-          <p className="text-xs text-amber-700 font-semibold mt-2">Requires BDO validation</p>
+          <p className="text-xs text-amber-700 font-semibold mt-2">BDO सत्यापन आवश्यक</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">District Fund Utilization</p>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">ज़िला निधि उपयोग</p>
           <h3 className="text-3xl font-black text-emerald-600 mt-2">86.4%</h3>
           <div className="w-full bg-gray-100 h-2 rounded-full mt-3 overflow-hidden">
             <div className="bg-emerald-500 h-full rounded-full" style={{ width: '86.4%' }}></div>
@@ -131,12 +131,12 @@ export default function DistrictAdmin() {
         <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Application Intake & Grant Disbursement Trend</h2>
-              <p className="text-xs text-gray-400">Monthly beneficiary volume progression (2026)</p>
+              <h2 className="text-lg font-bold text-slate-900">आवेदन प्राप्ति एवं अनुदान वितरण रुझान</h2>
+              <p className="text-xs text-gray-400">मासिक लाभार्थी संख्या प्रगति (2026)</p>
             </div>
             <div className="flex items-center space-x-4 text-xs font-semibold">
-              <span className="flex items-center"><span className="w-3 h-3 bg-blue-500 rounded-sm mr-1.5"></span> Applied</span>
-              <span className="flex items-center"><span className="w-3 h-3 bg-emerald-500 rounded-sm mr-1.5"></span> Disbursed</span>
+              <span className="flex items-center"><span className="w-3 h-3 bg-blue-500 rounded-sm mr-1.5"></span> आवेदित</span>
+              <span className="flex items-center"><span className="w-3 h-3 bg-emerald-500 rounded-sm mr-1.5"></span> वितरित</span>
             </div>
           </div>
 
@@ -151,7 +151,7 @@ export default function DistrictAdmin() {
                 <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
                   {/* Tooltip on hover */}
                   <div className="absolute -top-12 bg-slate-900 text-white text-[11px] py-1 px-2.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-20 whitespace-nowrap">
-                    {t.month}: {t.applications} Applied | {t.disbursed} Disbursed
+                    {t.month}: {t.applications} आवेदित | {t.disbursed} वितरित
                   </div>
 
                   <div className="w-full flex items-end justify-center space-x-1 h-full">
@@ -169,8 +169,8 @@ export default function DistrictAdmin() {
         {/* Sector-wise Distribution Card */}
         <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Sector-wise Demand Share</h2>
-            <p className="text-xs text-gray-400 mb-6">Distribution across 12 approved trades</p>
+            <h2 className="text-lg font-bold text-slate-900">क्षेत्रवार मांग हिस्सेदारी</h2>
+            <p className="text-xs text-gray-400 mb-6">12 अनुमोदित व्यवसायों में वितरण</p>
 
             <div className="space-y-4">
               {sectorShare.map((s, idx) => (
