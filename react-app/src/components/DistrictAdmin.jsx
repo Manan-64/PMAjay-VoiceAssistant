@@ -8,21 +8,21 @@ export default function DistrictAdmin() {
 
   // Sample District Beneficiary Records
   const [beneficiaries, setBeneficiaries] = useState([
-    { id: 'PMAJ-2601', name: 'Ramesh Kumar', skill: 'Poultry Farm', block: 'Pindra', date: '2026-08-20', subsidy: 10000, status: 'Approved' },
-    { id: 'PMAJ-2602', name: 'Sunita Devi', skill: 'Custom Tailoring', block: 'Arajiline', date: '2026-08-21', subsidy: 10000, status: 'Under Review' },
-    { id: 'PMAJ-2603', name: 'Amit Verma', skill: 'Solar Panel Technician', block: 'Kashi Vidyapeeth', date: '2026-08-22', subsidy: 10000, status: 'Approved' },
-    { id: 'PMAJ-2604', name: 'Pooja Rani', skill: 'Beauty Parlor', block: 'Cholapur', date: '2026-08-22', subsidy: 10000, status: 'Field Inspection Pending' },
-    { id: 'PMAJ-2605', name: 'Manoj Paswan', skill: 'Two-Wheeler Mechanic', block: 'Harahua', date: '2026-08-23', subsidy: 10000, status: 'Under Review' },
-    { id: 'PMAJ-2606', name: 'Geeta Kumari', skill: 'Dairy Farming', block: 'Pindra', date: '2026-08-23', subsidy: 10000, status: 'Approved' },
-    { id: 'PMAJ-2607', name: 'Vikas Sonkar', skill: 'Mobile Repair Shop', block: 'Arajiline', date: '2026-08-24', subsidy: 10000, status: 'Disbursed' }
+    { id: 'PMAJ-2601', name: 'Ramesh Kumar', skill: 'पोल्ट्री फार्म', block: 'पिंडरा', date: '2026-08-20', subsidy: 10000, status: 'स्वीकृत' },
+    { id: 'PMAJ-2602', name: 'Sunita Devi', skill: 'सिलाई', block: 'अराजीलाइन', date: '2026-08-21', subsidy: 10000, status: 'समीक्षाधीन' },
+    { id: 'PMAJ-2603', name: 'Amit Verma', skill: 'सोलर पैनल तकनीशियन', block: 'काशी विद्यापीठ', date: '2026-08-22', subsidy: 10000, status: 'स्वीकृत' },
+    { id: 'PMAJ-2604', name: 'Pooja Rani', skill: 'ब्यूटी पार्लर', block: 'चोलापुर', date: '2026-08-22', subsidy: 10000, status: 'फील्ड निरीक्षण लंबित' },
+    { id: 'PMAJ-2605', name: 'Manoj Paswan', skill: 'टू-व्हीलर मैकेनिक', block: 'हरहुआ', date: '2026-08-23', subsidy: 10000, status: 'समीक्षाधीन' },
+    { id: 'PMAJ-2606', name: 'Geeta Kumari', skill: 'डेयरी फार्मिंग', block: 'पिंडरा', date: '2026-08-23', subsidy: 10000, status: 'स्वीकृत' },
+    { id: 'PMAJ-2607', name: 'Vikas Sonkar', skill: 'मोबाइल रिपेयर शॉप', block: 'अराजीलाइन', date: '2026-08-24', subsidy: 10000, status: 'वितरित' }
   ]);
 
   const blockStats = [
-    { name: 'Pindra', target: 600, applied: 540, disbursed: 420, fundUsed: '₹42,00,000' },
-    { name: 'Arajiline', target: 500, applied: 460, disbursed: 380, fundUsed: '₹38,00,000' },
-    { name: 'Kashi Vidyapeeth', target: 700, applied: 690, disbursed: 510, fundUsed: '₹51,00,000' },
-    { name: 'Cholapur', target: 450, applied: 380, disbursed: 310, fundUsed: '₹31,00,000' },
-    { name: 'Harahua', target: 550, applied: 490, disbursed: 410, fundUsed: '₹41,00,000' },
+    { name: 'पिंडरा', target: 600, applied: 540, disbursed: 420, fundUsed: '₹42,00,000' },
+    { name: 'अराजीलाइन', target: 500, applied: 460, disbursed: 380, fundUsed: '₹38,00,000' },
+    { name: 'काशी विद्यापीठ', target: 700, applied: 690, disbursed: 510, fundUsed: '₹51,00,000' },
+    { name: 'चोलापुर', target: 450, applied: 380, disbursed: 310, fundUsed: '₹31,00,000' },
+    { name: 'हरहुआ', target: 550, applied: 490, disbursed: 410, fundUsed: '₹41,00,000' },
   ];
 
   const monthlyTrends = [
@@ -196,19 +196,19 @@ export default function DistrictAdmin() {
 
       {/* Block-Level Performance Matrix */}
       <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-        <h2 className="text-lg font-bold text-slate-900 mb-1">Block-Wise Allocation & Disbursement Status</h2>
-        <p className="text-xs text-gray-400 mb-4">Sub-district performance breakdown</p>
+        <h2 className="text-lg font-bold text-slate-900 mb-1">ब्लॉक-वार आवंटन एवं वितरण स्थिति</h2>
+        <p className="text-xs text-gray-400 mb-4">उप-ज़िला प्रदर्शन विवरण</p>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs font-bold uppercase border-b border-gray-200">
               <tr>
-                <th className="py-3 px-4">Sub-District Block</th>
-                <th className="py-3 px-4">Target Beneficiaries</th>
-                <th className="py-3 px-4">Applications</th>
-                <th className="py-3 px-4">Approved & Disbursed</th>
-                <th className="py-3 px-4">Subsidy Utilized</th>
-                <th className="py-3 px-4">Target Progress</th>
+                <th className="py-3 px-4">उप-ज़िला ब्लॉक</th>
+                <th className="py-3 px-4">लक्षित लाभार्थी</th>
+                <th className="py-3 px-4">आवेदन</th>
+                <th className="py-3 px-4">स्वीकृत एवं वितरित</th>
+                <th className="py-3 px-4">सब्सिडी उपयोग</th>
+                <th className="py-3 px-4">लक्ष्य प्रगति</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 font-medium">
@@ -241,17 +241,17 @@ export default function DistrictAdmin() {
       <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Beneficiary Application Verification Queue</h2>
-            <p className="text-xs text-gray-400">Direct grant verification and approval controls</p>
+            <h2 className="text-lg font-bold text-slate-900">लाभार्थी आवेदन सत्यापन कतार</h2>
+            <p className="text-xs text-gray-400">प्रत्यक्ष अनुदान सत्यापन एवं अनुमोदन नियंत्रण</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <input
               type="text"
-              placeholder="Search by ID, name, or skill..."
+              placeholder="आईडी, नाम या कौशल द्वारा खोजें..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-gray-50 border border-gray-300 text-xs rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 w-64"
+              className="bg-gray-50 border border-gray-300 text-xs rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 w-full sm:w-72"
             />
 
             <select
@@ -259,12 +259,12 @@ export default function DistrictAdmin() {
               onChange={(e) => setSelectedBlock(e.target.value)}
               className="bg-gray-50 border border-gray-300 text-xs rounded-xl px-3 py-2 font-semibold"
             >
-              <option value="All">All Blocks</option>
-              <option value="Pindra">Pindra</option>
-              <option value="Arajiline">Arajiline</option>
-              <option value="Kashi Vidyapeeth">Kashi Vidyapeeth</option>
-              <option value="Cholapur">Cholapur</option>
-              <option value="Harahua">Harahua</option>
+              <option value="All">सभी ब्लॉक</option>
+              <option value="पिंडरा">पिंडरा</option>
+              <option value="अराजीलाइन">अराजीलाइन</option>
+              <option value="काशी विद्यापीठ">काशी विद्यापीठ</option>
+              <option value="चोलापुर">चोलापुर</option>
+              <option value="हरहुआ">हरहुआ</option>
             </select>
 
             <select
@@ -272,11 +272,11 @@ export default function DistrictAdmin() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="bg-gray-50 border border-gray-300 text-xs rounded-xl px-3 py-2 font-semibold"
             >
-              <option value="All">All Statuses</option>
-              <option value="Approved">Approved</option>
-              <option value="Under Review">Under Review</option>
-              <option value="Field Inspection Pending">Field Inspection Pending</option>
-              <option value="Disbursed">Disbursed</option>
+              <option value="All">सभी स्थितियां</option>
+              <option value="स्वीकृत">स्वीकृत</option>
+              <option value="समीक्षाधीन">समीक्षाधीन</option>
+              <option value="फील्ड निरीक्षण लंबित">फील्ड निरीक्षण लंबित</option>
+              <option value="वितरित">वितरित</option>
             </select>
           </div>
         </div>
@@ -285,14 +285,14 @@ export default function DistrictAdmin() {
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs font-bold uppercase border-b border-gray-200">
               <tr>
-                <th className="py-3 px-4">Application ID</th>
-                <th className="py-3 px-4">Beneficiary Name</th>
-                <th className="py-3 px-4">Trade / Skill</th>
-                <th className="py-3 px-4">Block</th>
-                <th className="py-3 px-4">Application Date</th>
-                <th className="py-3 px-4">Max Subsidy</th>
-                <th className="py-3 px-4">Current Status</th>
-                <th className="py-3 px-4 text-center">Action Controls</th>
+                <th className="py-3 px-4">आवेदन आईडी</th>
+                <th className="py-3 px-4">लाभार्थी का नाम</th>
+                <th className="py-3 px-4">व्यवसाय / कौशल</th>
+                <th className="py-3 px-4">ब्लॉक</th>
+                <th className="py-3 px-4">आवेदन तिथि</th>
+                <th className="py-3 px-4">अधिकतम सब्सिडी</th>
+                <th className="py-3 px-4">वर्तमान स्थिति</th>
+                <th className="py-3 px-4 text-center">कार्रवाई नियंत्रण</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 font-medium">
@@ -306,9 +306,9 @@ export default function DistrictAdmin() {
                   <td className="py-3.5 px-4 font-bold text-slate-900">₹{b.subsidy.toLocaleString('en-IN')}</td>
                   <td className="py-3.5 px-4">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                      b.status === 'Approved' ? 'bg-green-100 text-green-700' :
-                      b.status === 'Disbursed' ? 'bg-emerald-100 text-emerald-800' :
-                      b.status === 'Under Review' ? 'bg-blue-100 text-blue-700' :
+                      b.status === 'स्वीकृत' ? 'bg-green-100 text-green-700' :
+                      b.status === 'वितरित' ? 'bg-emerald-100 text-emerald-800' :
+                      b.status === 'समीक्षाधीन' ? 'bg-blue-100 text-blue-700' :
                       'bg-amber-100 text-amber-700'
                     }`}>
                       {b.status}
@@ -316,28 +316,28 @@ export default function DistrictAdmin() {
                   </td>
                   <td className="py-3.5 px-4">
                     <div className="flex items-center justify-center space-x-2">
-                      {b.status !== 'Disbursed' && (
+                      {b.status !== 'वितरित' && (
                         <button
-                          onClick={() => handleStatusChange(b.id, 'Disbursed')}
+                          onClick={() => handleStatusChange(b.id, 'वितरित')}
                           className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 py-1 rounded-lg font-bold transition-all"
                           title="Authorize ₹10,000 Direct Bank Transfer"
                         >
-                          Disburse
+                          वितरित करें
                         </button>
                       )}
-                      {b.status !== 'Approved' && b.status !== 'Disbursed' && (
+                      {b.status !== 'स्वीकृत' && b.status !== 'वितरित' && (
                         <button
-                          onClick={() => handleStatusChange(b.id, 'Approved')}
+                          onClick={() => handleStatusChange(b.id, 'स्वीकृत')}
                           className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2.5 py-1 rounded-lg font-bold transition-all"
                         >
-                          Approve
+                          अनुमोदित करें
                         </button>
                       )}
                       <button
-                        onClick={() => handleStatusChange(b.id, 'Field Inspection Pending')}
+                        onClick={() => handleStatusChange(b.id, 'फील्ड निरीक्षण लंबित')}
                         className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-2.5 py-1 rounded-lg font-semibold transition-all"
                       >
-                        Inspect
+                        निरीक्षण करें
                       </button>
                     </div>
                   </td>
