@@ -125,8 +125,51 @@ const uiDict = {
     loan: "બેંક લોન / સ્વયં",
     applyBtn: "પીએમ-અજય માટે અરજી કરો",
     listenBtn: "પ્રાદેશિક ભાષામાં સાંભળો",
-    sectorLabel: "ક્ષેત્ર"
+    sectorLabel: "ક્ષેત્ર",
+    howToStart: "કેવી રીતે શરૂ કરવું:",
+    dailyTasks: "દૈનિક કાર્યો:",
+    growthPotential: "વિકાસની સંભાવના:",
+    viewJobDetails: "નોકરીની ભૂમિકાની વિગતો જુઓ"
   }
+};
+
+const translationCache = {};
+
+const TranslatedText = ({ text, lang }) => {
+  const [translated, setTranslated] = useState(text);
+
+  useEffect(() => {
+    if (!text) return;
+    const shortLang = lang.split('-')[0];
+    if (shortLang === 'en') {
+      setTranslated(text);
+      return;
+    }
+    
+    const cacheKey = `${shortLang}_${text}`;
+    if (translationCache[cacheKey]) {
+      setTranslated(translationCache[cacheKey]);
+      return;
+    }
+
+    let isMounted = true;
+    const fetchTranslation = async () => {
+      try {
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${shortLang}&dt=t&q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+        const result = data[0].map(x => x[0]).join('');
+        translationCache[cacheKey] = result;
+        if (isMounted) setTranslated(result);
+      } catch (e) {
+        if (isMounted) setTranslated(text);
+      }
+    };
+    
+    fetchTranslation();
+    return () => { isMounted = false; };
+  }, [text, lang]);
+
+  return <>{translated}</>;
 };
 
 function App() {
@@ -672,7 +715,7 @@ function App() {
                           
                           {trade.overview && (
                             <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-                              {trade.overview}
+                              <TranslatedText text={trade.overview} lang={currentLanguage} />
                             </p>
                           )}
 
@@ -781,28 +824,34 @@ function App() {
                                 onClick={() => setExpandedDetailsCard(expandedDetailsCard === trade.id ? null : trade.id)}
                                 className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors w-full md:justify-start justify-center"
                               >
-                                View Job Role Details
+                                <TranslatedText text="View Job Role Details" lang={currentLanguage} />
                                 <ChevronDown className={`w-4 h-4 transition-transform ${expandedDetailsCard === trade.id ? 'rotate-180' : ''}`} />
                               </button>
 
                               {expandedDetailsCard === trade.id && (
-                                <div className="mt-3 bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm text-left animate-in slide-in-from-top-2 fade-in duration-200 space-y-3">
+                                <div className="mt-3 bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm text-left animate-in slide-in-from-top-2 fade-in duration-200 space-y-4">
                                   {trade.onboarding && (
                                     <div>
-                                      <strong className="text-slate-800">How to Start:</strong>
-                                      <p className="text-slate-600 mt-1">{trade.onboarding}</p>
+                                      <strong className="text-slate-800"><TranslatedText text="How to Start:" lang={currentLanguage} /></strong>
+                                      <ol className="list-decimal list-outside ml-5 mt-2 space-y-2 text-gray-700">
+                                        {trade.onboarding.split(/(?=\d+\.\s)/).filter(s => s.trim().length > 0).map((step, idx) => (
+                                          <li key={idx}>
+                                            <TranslatedText text={step.replace(/^\d+\.\s/, '').trim()} lang={currentLanguage} />
+                                          </li>
+                                        ))}
+                                      </ol>
                                     </div>
                                   )}
                                   {trade.dailyTasks && (
                                     <div>
-                                      <strong className="text-slate-800">Daily Tasks:</strong>
-                                      <p className="text-slate-600 mt-1">{trade.dailyTasks}</p>
+                                      <strong className="text-slate-800"><TranslatedText text="Daily Tasks:" lang={currentLanguage} /></strong>
+                                      <p className="text-slate-600 mt-1"><TranslatedText text={trade.dailyTasks} lang={currentLanguage} /></p>
                                     </div>
                                   )}
                                   {trade.growth && (
                                     <div>
-                                      <strong className="text-slate-800">Growth Potential:</strong>
-                                      <p className="text-slate-600 mt-1">{trade.growth}</p>
+                                      <strong className="text-slate-800"><TranslatedText text="Growth Potential:" lang={currentLanguage} /></strong>
+                                      <p className="text-slate-600 mt-1"><TranslatedText text={trade.growth} lang={currentLanguage} /></p>
                                     </div>
                                   )}
                                 </div>
