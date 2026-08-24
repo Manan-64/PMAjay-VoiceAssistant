@@ -11,7 +11,11 @@ export const nsqfData = [
       { item: 'Shed Setup & Initial Cattle Feed', cost: '₹10,000' },
       { item: 'Milking Equipment & Utility Tools', cost: '₹5,000' }
     ],
-    keywords: ["cow", "milk", "buffalo", "dairy", "cattle", "kheti", "doodh", "janwar", "गाय", "भैंस", "दूध", "डेयरी", "किसान"] 
+    keywords: ["cow", "milk", "buffalo", "dairy", "cattle", "kheti", "doodh", "janwar", "गाय", "भैंस", "दूध", "डेयरी", "किसान"],
+    overview: "Raise and manage dairy animals to produce milk and dairy products for local sale.",
+    onboarding: "1. Secure an adequate shed and grazing area. 2. Purchase high-yield milch animals using the grant. 3. Connect with local milk cooperatives or buyers.",
+    dailyTasks: "Feeding cattle, cleaning the shed, milking cows/buffaloes, and delivering milk to collection centers.",
+    growth: "Can expand by adding more cattle, producing value-added products like paneer or ghee."
   },
   { 
     id: "AGR-Q4306", 
@@ -25,7 +29,11 @@ export const nsqfData = [
       { item: 'Coop Setup & Feeder/Drinker Equipment', cost: '₹10,000' },
       { item: 'Veterinary Medicines & Initial Feed', cost: '₹6,000' }
     ],
-    keywords: ["chicken", "hen", "egg", "poultry", "bird", "murgi", "anda", "मुर्गी", "अंडा", "पोल्ट्री"] 
+    keywords: ["chicken", "hen", "egg", "poultry", "bird", "murgi", "anda", "मुर्गी", "अंडा", "पोल्ट्री"],
+    overview: "Raise livestock for eggs or meat production in a controlled coop.",
+    onboarding: "1. Secure a small shed or fenced area. 2. Buy initial chicks, feeders, and animal feed. 3. Connect with local veterinary services.",
+    dailyTasks: "Feeding livestock, cleaning enclosures, monitoring health, and collecting produce (eggs/meat) for market sale.",
+    growth: "Easily scalable by reinvesting profits into more livestock."
   },
   { 
     id: "AGR-Q1201", 
@@ -39,7 +47,11 @@ export const nsqfData = [
       { item: 'Drip Irrigation Kit & Soil Prep', cost: '₹7,000' },
       { item: 'Farming Tools & Sprayers', cost: '₹3,000' }
     ],
-    keywords: ["farm", "crops", "soil", "organic", "vegetables", "kheti", "sabzi", "fasal"] 
+    keywords: ["farm", "crops", "soil", "organic", "vegetables", "kheti", "sabzi", "fasal"],
+    overview: "Cultivate vegetables, fruits, or grains using chemical-free, natural farming methods.",
+    onboarding: "1. Prepare a small plot of land with organic compost. 2. Buy organic seeds and natural fertilizers. 3. Set up drip irrigation.",
+    dailyTasks: "Watering crops, managing weeds manually, applying organic pest control, and harvesting ripe produce.",
+    growth: "High premium market demand for organic produce; can expand into direct-to-consumer sales."
   },
   { 
     id: "AMH-Q0301", 
@@ -53,7 +65,11 @@ export const nsqfData = [
       { item: 'Ironing Table & Accessories', cost: '₹3,000' },
       { item: 'Raw Materials (Threads, Needles, Fabric)', cost: '₹3,000' }
     ],
-    keywords: ["clothes", "tailor", "stitching", "sewing", "fashion", "kapde", "silai", "darzi", "कपड़े", "सिलाई", "दर्जी"] 
+    keywords: ["clothes", "tailor", "stitching", "sewing", "fashion", "kapde", "silai", "darzi", "कपड़े", "सिलाई", "दर्जी"],
+    overview: "Run a local tailoring shop providing stitching, altering, and garment repair services.",
+    onboarding: "1. Complete a basic NSQF tailoring course (if applicable). 2. Purchase a motorized sewing machine and basic raw materials (threads, needles, cloth). 3. Set up a workstation in your home or a rented shop.",
+    dailyTasks: "Measuring clients, cutting fabric, operating the sewing machine, delivering finished garments, and managing customer orders.",
+    growth: "High demand during festivals and school uniform seasons."
   },
   { 
     id: "AMH-Q1001", 
@@ -67,7 +83,11 @@ export const nsqfData = [
       { item: 'Base Fabrics & Embellishments', cost: '₹1,500' },
       { item: 'Lighting & Workspace Setup', cost: '₹1,000' }
     ],
-    keywords: ["thread", "design", "needle", "handicraft", "embroidery", "kadai", "bunai"] 
+    keywords: ["thread", "design", "needle", "handicraft", "embroidery", "kadai", "bunai"],
+    overview: "Create intricate hand-embroidered designs on garments and textiles for boutique or local sale.",
+    onboarding: "1. Purchase embroidery hoops, specialized needles, and threads. 2. Source base fabrics. 3. Set up a well-lit workspace at home.",
+    dailyTasks: "Tracing designs onto fabric, executing various embroidery stitches, and finishing garments for clients.",
+    growth: "Can take bulk orders from boutiques or sell customized premium bridal wear."
   },
   { 
     id: "SGJ-Q0101", 
@@ -81,7 +101,11 @@ export const nsqfData = [
       { item: 'Professional Tool Kit (Multimeter, Drill, etc.)', cost: '₹10,000' },
       { item: 'Safety Gear & Licensing', cost: '₹5,000' }
     ],
-    keywords: ["solar", "sun", "panel", "renewable", "energy", "bijli", "dhoop", "current", "बिजली", "तार", "लाइट", "सोलर"] 
+    keywords: ["solar", "sun", "panel", "renewable", "energy", "bijli", "dhoop", "current", "बिजली", "तार", "लाइट", "सोलर"],
+    overview: "Install and maintain solar panels for residential and commercial rooftops.",
+    onboarding: "1. Complete a Suryamitra or equivalent solar training program. 2. Purchase a professional electrical toolkit and safety gear. 3. Register as an independent installer.",
+    dailyTasks: "Inspecting rooftops, mounting solar panels, wiring inverters and batteries, and performing routine maintenance.",
+    growth: "Rapidly growing sector with government push for solar energy."
   },
   { 
     id: "ELE-Q8104", 
@@ -95,7 +119,11 @@ export const nsqfData = [
       { item: 'Precision Tool Kit & Consumables', cost: '₹5,000' },
       { item: 'Initial Inventory (Screens, Batteries)', cost: '₹5,000' }
     ],
-    keywords: ["phone", "mobile", "screen", "battery", "repair", "electronics", "mobile", "kharab"] 
+    keywords: ["phone", "mobile", "screen", "battery", "repair", "electronics", "mobile", "kharab"],
+    overview: "Repair smartphones, radios, and small household electronics.",
+    onboarding: "1. Learn basic soldering and circuit repair. 2. Buy a multimeter, soldering iron, screwdrivers, and spare parts inventory. 3. Open a small desk-based repair shop.",
+    dailyTasks: "Diagnosing hardware issues, replacing broken screens, fixing charging ports, and testing electronics.",
+    growth: "Excellent year-round demand as mobile usage increases."
   },
   { 
     id: "CON-Q0602", 
@@ -109,7 +137,11 @@ export const nsqfData = [
       { item: 'Safety Equipment (Gloves, Boots, Helmet)', cost: '₹3,000' },
       { item: 'Wires, Switches & Consumables', cost: '₹3,000' }
     ],
-    keywords: ["wire", "house", "light", "switch", "electrician", "bijli", "taar", "bulb", "बिजली", "तार", "लाइट", "सोलर"] 
+    keywords: ["wire", "house", "light", "switch", "electrician", "bijli", "taar", "bulb", "बिजली", "तार", "लाइट", "सोलर"],
+    overview: "Provide electrical wiring, repair, and installation services for homes and small businesses.",
+    onboarding: "1. Acquire basic electrical training. 2. Purchase a professional tool kit (drill, testers, pliers) and safety equipment. 3. Market services locally.",
+    dailyTasks: "Installing switches, fixing short circuits, wiring new rooms, and repairing electrical appliances.",
+    growth: "Consistent demand; can scale into contracting for larger construction projects."
   },
   { 
     id: "BWS-Q0101", 
@@ -123,7 +155,11 @@ export const nsqfData = [
       { item: 'Professional Makeup & Skincare Kit', cost: '₹8,000' },
       { item: 'Hair Dryer, Straightener & Tools', cost: '₹5,000' }
     ],
-    keywords: ["makeup", "salon", "hair", "skin", "parlour", "sundar", "baal"] 
+    keywords: ["makeup", "salon", "hair", "skin", "parlour", "sundar", "baal"],
+    overview: "Operate a local beauty and grooming parlor.",
+    onboarding: "1. Complete a beautician certification. 2. Buy a salon chair, mirror, and basic cosmetic/grooming kits using the grant. 3. Ensure a clean, well-lit setup.",
+    dailyTasks: "Providing haircuts, threading, makeup, and skincare services to local clients.",
+    growth: "Can expand into bridal makeup which offers high profit margins."
   },
   { 
     id: "FFC-Q0103", 
@@ -137,6 +173,10 @@ export const nsqfData = [
       { item: 'Carving Tools & Knives', cost: '₹2,000' },
       { item: 'Polishes, Dyes & Preservatives', cost: '₹2,000' }
     ],
-    keywords: ["bamboo", "wood", "basket", "craft", "tokri", "baans"] 
+    keywords: ["bamboo", "wood", "basket", "craft", "tokri", "baans"],
+    overview: "Craft eco-friendly bamboo baskets, furniture, and decorative items.",
+    onboarding: "1. Source raw bamboo from local suppliers. 2. Purchase carving tools, knives, and preservatives. 3. Set up a crafting space.",
+    dailyTasks: "Cutting and treating bamboo, weaving baskets, polishing finished products, and selling at local markets.",
+    growth: "Increasing demand for sustainable packaging and eco-friendly home decor."
   }
 ];

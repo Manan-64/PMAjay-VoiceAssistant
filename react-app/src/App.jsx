@@ -132,6 +132,8 @@ const uiDict = {
 function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [currentLanguage, setCurrentLanguage] = useState('hi-IN');
+  const [expandedCard, setExpandedCard] = useState(null);
+  const [selectedDescriptionTrade, setSelectedDescriptionTrade] = useState(null);
   const [isWhatsappOpen, setIsWhatsappOpen] = useState(false);
 
   // --- Voice Assistant State ---
@@ -736,14 +738,23 @@ function App() {
                             </div>
                           </div>
 
-                          <div className="mt-4">
+                          <div className="mt-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
                             <button
                               onClick={() => setExpandedCard(expandedCard === trade.id ? null : trade.id)}
-                              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors w-full justify-center md:justify-start"
+                              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors w-full sm:w-auto justify-center"
                             >
                               {translations[currentLanguage]?.viewBreakdown || "View Detailed Cost Breakdown"}
                               <ChevronDown className={`w-4 h-4 transition-transform ${expandedCard === trade.id ? 'rotate-180' : ''}`} />
                             </button>
+                            
+                            <button
+                              onClick={() => setSelectedDescriptionTrade(trade)}
+                              className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors w-full sm:w-auto justify-center bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 hover:bg-blue-100"
+                            >
+                              <Square className="w-4 h-4" /> 
+                              Read Full Description
+                            </button>
+                          </div>
 
                             {expandedCard === trade.id && trade.costBreakdown && (
                               <div className="mt-3 bg-white border border-slate-200 rounded-lg overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200">
@@ -783,6 +794,74 @@ function App() {
           )}
         </div>
       </main>
+
+      {/* Full Description Modal */}
+      {selectedDescriptionTrade && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+          <div className="bg-white w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 fade-in duration-200">
+            <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+              <h2 className="text-xl md:text-2xl font-black text-slate-800">
+                {selectedDescriptionTrade.localTitle?.[currentLanguage] || selectedDescriptionTrade.title}
+              </h2>
+              <button 
+                onClick={() => setSelectedDescriptionTrade(null)}
+                className="p-2 rounded-full hover:bg-slate-200 text-slate-500 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="p-6 md:p-8 overflow-y-auto flex-grow space-y-6 bg-white text-left">
+              {selectedDescriptionTrade.overview && (
+                <div>
+                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Overview</h3>
+                  <p className="text-slate-800 text-lg leading-relaxed font-medium">
+                    {selectedDescriptionTrade.overview}
+                  </p>
+                </div>
+              )}
+              
+              {selectedDescriptionTrade.onboarding && (
+                <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
+                  <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-3">Onboarding & Setup</h3>
+                  <p className="text-slate-700 leading-relaxed">
+                    {selectedDescriptionTrade.onboarding}
+                  </p>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {selectedDescriptionTrade.dailyTasks && (
+                  <div className="border border-slate-200 rounded-xl p-5">
+                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Daily Tasks</h3>
+                    <p className="text-slate-700 leading-relaxed">
+                      {selectedDescriptionTrade.dailyTasks}
+                    </p>
+                  </div>
+                )}
+                
+                {selectedDescriptionTrade.growth && (
+                  <div className="border border-slate-200 rounded-xl p-5 bg-green-50/50">
+                    <h3 className="text-sm font-bold text-green-600 uppercase tracking-wider mb-3">Growth Potential</h3>
+                    <p className="text-slate-700 leading-relaxed">
+                      {selectedDescriptionTrade.growth}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="bg-slate-50 border-t border-slate-200 px-6 py-4 flex justify-end">
+              <button 
+                onClick={() => setSelectedDescriptionTrade(null)}
+                className="bg-slate-800 hover:bg-slate-900 text-white px-6 py-2 rounded-lg font-bold transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating WhatsApp Assistant Button */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
