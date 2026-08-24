@@ -899,7 +899,11 @@ function App() {
                       const handleChipClick = (jobTitle, cat) => {
                         const jobId = `EXTRA-${jobTitle.replace(/\s+/g, '-').toUpperCase()}`;
                         setSelectedExtraJobs(prev => {
-                          if (prev.find(j => j.id === jobId)) return prev; // prevent duplicate
+                          // If already selected → remove (untick)
+                          if (prev.find(j => j.id === jobId)) {
+                            return prev.filter(j => j.id !== jobId);
+                          }
+                          // Otherwise → add (tick)
                           const newJob = {
                             id: jobId,
                             title: jobTitle,
@@ -953,14 +957,15 @@ function App() {
                                         <button
                                           key={job}
                                           onClick={() => handleChipClick(job, cat)}
-                                          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border cursor-pointer transition-all shadow-sm ${
+                                          title={isAdded ? `Remove "${job}" from recommendations` : `Add "${job}" to recommendations`}
+                                          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-all shadow-sm select-none ${
                                             isAdded
-                                              ? 'bg-green-100 border-green-400 text-green-800 ring-1 ring-green-400'
-                                              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-400 hover:bg-slate-100'
+                                              ? 'bg-blue-600 border-blue-600 text-white ring-2 ring-blue-300 ring-offset-1'
+                                              : 'bg-white border-slate-200 text-slate-700 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700'
                                           }`}
                                         >
-                                          {isAdded ? <Check className="w-3 h-3" /> : <span>📌</span>}
-                                          {job}
+                                          {isAdded ? <Check className="w-3 h-3 flex-shrink-0" /> : <span className="text-[10px]">📌</span>}
+                                          <span>{job}</span>
                                         </button>
                                       );
                                     })}
